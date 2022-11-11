@@ -1,0 +1,10 @@
+.DS_Store
+
+# Python - Byte-compiled / optimized / DLL files
+__pycache__/*
+*.py[cod]
+*$py.class
+_local/*
+debug/**/stats.yaml
+debug/**/stats_error.yaml
+debug/unit_test/_certificates

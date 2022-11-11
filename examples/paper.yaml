@@ -1,0 +1,15 @@
+scheduling policy: FP   # fixed-priority
+preemption model:  FP   # fully-preemptive
+task set:
+
+- id: 1
+  worst-case execution time: 50
+  arrival curve: [220,[[1,1],[105,2]]]
+  deadline: 100
+  priority: 2
+
+- id: 2
+  worst-case execution time: 10
+  period: 30
+  deadline: 100
+  priority: 1

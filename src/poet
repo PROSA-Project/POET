@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+
+#################################
+## Dependencies check 
+#################################
+
+import sys, pkg_resources
+
+dependencies = [
+'pyyaml',
+'joblib',
+]
+try:
+    pkg_resources.require(dependencies)
+except pkg_resources.DistributionNotFound as error:
+    print(error)
+    sys.exit(-1)
+
+
+#################################
+## Running POET 
+#################################
+
+import pipeline.main
+pipeline.main.run_poet()

@@ -1,0 +1,20 @@
+---
+scheduling policy: EDF
+preemption model: FP
+task set: 
+
+- id: 1
+  period: 100
+  worst-case execution time: 50
+  deadline: 100
+
+- id: 2
+  min interarrival: 120
+  worst-case execution time: 10
+  deadline: 200
+
+- id: 3
+  arrival curve: [10, [[1, 1], [5, 2]]]
+  worst-case execution time: 1
+  deadline: 200
+...
