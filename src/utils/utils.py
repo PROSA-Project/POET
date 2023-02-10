@@ -6,9 +6,11 @@ import itertools
 import re
 from threading import currentThread
 
+
 # Returns a string containing all the elements of a given list in the form "a,b,c"
-def pretty_list (list):
+def pretty_list(list):
     return ", ".join(list)
+
 
 def patch(text, wildcard, patch):
     # Given a text, replaces the occurrences of the wildcard with the given patch.
@@ -17,25 +19,24 @@ def patch(text, wildcard, patch):
     # for all lines.
     # e.g.
     #              $PATCH$
-    #<------------>
+    # <------------>
     #
     #  becomes...
     #              Patched line 1
     #              Patched line 2
-    #<------------>
+    # <------------>
     patch = str(patch)
-    patch_lines = patch.split('\n')
-    if len(patch_lines) == 1: # Single-line patch, easy.
+    patch_lines = patch.split("\n")
+    if len(patch_lines) == 1:  # Single-line patch, easy.
         return text.replace(wildcard, patch)
-    else: # Multi-line patch. Here, we want to preserve indentation as much as possible.
-
+    else:  # Multi-line patch. Here, we want to preserve indentation as much as possible.
         # match the preceding characters since the last newline (^) as a group for easy retrieval
-        line_with_wildcard_re = re.compile('^(.*)' + re.escape(wildcard), re.MULTILINE)
+        line_with_wildcard_re = re.compile("^(.*)" + re.escape(wildcard), re.MULTILINE)
 
         # function to replace one matched lined
         def insert_lines(match):
             first_indent = match.group(1)
-            follow_indent = re.sub(r'\S', ' ', match.group(1))
+            follow_indent = re.sub(r"\S", " ", match.group(1))
             first_line = [first_indent + patch_lines[0]]
             follow_lines = (follow_indent + line for line in patch_lines[1:])
             return "\n".join(itertools.chain(first_line, follow_lines))
@@ -44,25 +45,27 @@ def patch(text, wildcard, patch):
 
 
 def conditional_cut_patch(text, wildcard_start, wildcard_end, cut):
-    # Given a text, the code acts on every portion of text of the form 
-    # "wildcard_start ... wildcard_end". 
+    # Given a text, the code acts on every portion of text of the form
+    # "wildcard_start ... wildcard_end".
     # If cut is specified, the text enclosed in the wildcards and the wildcards
     # are cut away. Otherwise, only the wildcards are removed.
     # e.g.
     # wildcard_start = $X$ and wildcard_end = $Y$
-    # I am $X$not $Y$a bunny. 
-    #<------------>
+    # I am $X$not $Y$a bunny.
+    # <------------>
     #
     #  becomes...
     #              I am a bunny.            if cut=True
     #              I am not a bunny.        if cut=False
-    #<------------>
+    # <------------>
     # The function returns the update text and the cut text
     if cut:
         assert wildcard_start in text
         assert wildcard_end in text
-        wc_re = re.compile(re.escape(wildcard_start) + '([\S\s]*)' + 
-                           re.escape(wildcard_end), re.MULTILINE)
+        wc_re = re.compile(
+            re.escape(wildcard_start) + "([\S\s]*)" + re.escape(wildcard_end),
+            re.MULTILINE,
+        )
         match = wc_re.search(text)
         cut_text = match.group(1)
         return wc_re.sub("", text), cut_text
@@ -71,24 +74,28 @@ def conditional_cut_patch(text, wildcard_start, wildcard_end, cut):
         text = text.replace(wildcard_end, "")
         return text, ""
 
+
 def pars(*sl):
     # Splits a list of strings into a list of parameters.
     # e.g. ["git commit -m", "initial commit"]
     # becomes ["git", "commit", "-m", "initial", "commit"]
-	return list(itertools.chain.from_iterable((s.strip().split(" ") for s in sl)))
+    return list(itertools.chain.from_iterable((s.strip().split(" ") for s in sl)))
+
 
 def search_space_len(As):
-    if len(As) == 0 : return 0
+    if len(As) == 0:
+        return 0
 
-    if isinstance(As[0], list): # EDF
-        return sum ([len(tsk_ss) for tsk_ss in As])
-    else: # FP
+    if isinstance(As[0], list):  # EDF
+        return sum([len(tsk_ss) for tsk_ss in As])
+    else:  # FP
         return len(As)
+
 
 def search_space(As):
     space = []
     for tsk_ss in As:
-        for (k, tsk_ss_slice) in tsk_ss:
+        for k, tsk_ss_slice in tsk_ss:
             space.extend(tsk_ss_slice)
     space.sort()
     return space

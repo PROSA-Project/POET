@@ -1,13 +1,13 @@
 import os
 from structures import pg
 
-TASK_SET_DECLARATION_FILE_NAME = "task_set" 
+TASK_SET_DECLARATION_FILE_NAME = "task_set"
 
 # ********** Template files **********
 
-TEMPLATES_MAIN_FOLDER =  \
-	os.path.join((os.path.dirname(os.path.realpath(__file__))),
-	             "..", "..", "templates")
+TEMPLATES_MAIN_FOLDER = os.path.join(
+    (os.path.dirname(os.path.realpath(__file__))), "..", "..", "templates"
+)
 TEMPLATES_CERTIFICATES_FOLDER = os.path.join(TEMPLATES_MAIN_FOLDER, "certificates")
 TEMPLATE_MAIN_FP_EDF = os.path.join(TEMPLATES_CERTIFICATES_FOLDER, "fp_edf.v")
 TEMPLATE_MAIN_NP_EDF = os.path.join(TEMPLATES_CERTIFICATES_FOLDER, "np_edf.v")
@@ -53,7 +53,8 @@ WC_PROSA_PATH = "$PROSA_PATH$"
 
 # **********************************************
 
-def get_main_certificate (problem_instance):
+
+def get_main_certificate(problem_instance):
     """
     Picks a template file, basing on the problem instance.
     Returns the entire file as a string.
@@ -70,9 +71,12 @@ def get_main_certificate (problem_instance):
     elif pm == pg.NON_PREEMPTIVE and sp == pg.EARLIEST_DEADLINE_FIRST:
         template_file_path = TEMPLATE_MAIN_NP_EDF
     else:
-        raise Exception (f"Invalid scheduling policy: {problem_instance.scheduling_policy}")
+        raise Exception(
+            f"Invalid scheduling policy: {problem_instance.scheduling_policy}"
+        )
 
     return open(template_file_path, "r").read()
+
 
 def get_task_declaration(problem_instance):
     if problem_instance.scheduling_policy == pg.EARLIEST_DEADLINE_FIRST:
@@ -80,7 +84,8 @@ def get_task_declaration(problem_instance):
     else:
         return TEMPLATE_TASK_DECLARATION_PRIORITY
 
-########## Patches 
+
+########## Patches
 TEMPLATE_TASK_DECLARATION_PRIORITY = """Definition $TASK_NAME$ := {| 
     id: $TASK_ID$ 
     cost: $TASK_COST$ 

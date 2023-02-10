@@ -4,14 +4,16 @@ This module the calculations of the RTA fixpoints for Fully Preemptive Earliest-
 from utils import rt_utils
 import rta.edf.edf as edf
 
+
 class NonPreemptiveEarliestDeadlineFirstRTA:
     def __init__(self, task_set):
         # Calculating blocking bound
         self.blocking_bound = {}
         for t in task_set:
-            bound = max([to.wcet-1 for to in task_set 
-                                    if to.deadline > t.deadline], default=0)
-            assert(bound >= 0)
+            bound = max(
+                [to.wcet - 1 for to in task_set if to.deadline > t.deadline], default=0
+            )
+            assert bound >= 0
             self.blocking_bound[t.id] = bound
 
     ####################################
@@ -32,27 +34,27 @@ class NonPreemptiveEarliestDeadlineFirstRTA:
     # Search space solutions (Fs)
     ####################################
 
-    def search_space_solution (self, task_set, tsk, A):
-        def F_fixpoint (task_set, A, tsk, F):
+    def search_space_solution(self, task_set, tsk, A):
+        def F_fixpoint(task_set, A, tsk, F):
             # A + F = blocking_bound + (task_rbf (A + ε) - (task_cost tsk - ε))
             #    + bound_on_total_hep_workload A (A + F)
             blocking_bound = self.blocking_bound[tsk.id]
-            task_rbf = tsk.task_request_bound_function(A+1)
-            task_cost = tsk.wcet-1
-            bound_hep = edf.bound_on_total_hep_workload(task_set, tsk, A, A+F)
-            
+            task_rbf = tsk.task_request_bound_function(A + 1)
+            task_cost = tsk.wcet - 1
+            bound_hep = edf.bound_on_total_hep_workload(task_set, tsk, A, A + F)
+
             F = blocking_bound + max(0, task_rbf - task_cost) + bound_hep - A
             return max(0, F)
 
-        fix_fun = lambda f, A=A: F_fixpoint (task_set, A, tsk, f)
-        F = rt_utils.compute_fixpoint (fix_fun, 1)
+        fix_fun = lambda f, A=A: F_fixpoint(task_set, A, tsk, f)
+        F = rt_utils.compute_fixpoint(fix_fun, 1)
         return F
 
     ####################################
-    # Response-time 
+    # Response-time
     ####################################
 
-    def response_time(self, Fs, tsk): 
+    def response_time(self, Fs, tsk):
         # R = max F + (task_cost tsk - ε).
         m = 0
         for tsk_ss in Fs:
