@@ -5,7 +5,7 @@ from posixpath import split
 from structures import pg
 from structures.task import TaskType
 from utils.utils import patch, conditional_cut_patch
-from pipeline import templates
+from ..pipeline import templates
 
 
 def generate_proof(

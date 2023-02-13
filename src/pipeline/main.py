@@ -17,7 +17,7 @@ SKIP_VERIFICATION = False
 import os, shutil, subprocess, argparse, sys
 from re import TEMPLATE
 import stat
-from pipeline import parser, coq_generator, templates
+from ..pipeline import parser, coq_generator, templates
 from utils import statistics, timing
 from structures.analysis_results import AnalysisResults
 from joblib import Parallel, delayed
