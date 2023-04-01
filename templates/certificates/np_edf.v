@@ -36,8 +36,8 @@ Section TaskSetDeclaration.
   Proof.
     intros task IN.
     repeat (move: IN; rewrite in_cons => /orP [/eqP EQtsk | IN]); subst; last by done.
-    all: try by (* apply/eqP/eqP; *) clear; rewrite [_ == _]refines_eq; vm_compute.
-    all: by apply/valid_arrivals_P; rewrite [valid_arrivals _]refines_eq; vm_compute.
+    all: try by clear; rewrite [_ == _]refines_eq; vm_compute.
+    all: by rewrite [valid_arrivals _]refines_eq; vm_compute.
   Qed.
 
   Lemma task_cost_positive:
