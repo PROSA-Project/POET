@@ -418,6 +418,7 @@ def compile_certificate(prosa_path, certificates_path, certificate, external_dec
     success = return_code == 0
     if not success:
         print(f"Compilation of {certificate} ended with return code {return_code}")
+        sys.exit(return_code)
 
     time = stopwatch.stop_timer(f"coq_time")
     return time if success else -1
@@ -442,6 +443,7 @@ def verify_certificate(
     success = return_code == 0
     if not success:
         print(f"Verifying of {certificate} ended with return code {return_code}")
+        sys.exit(return_code)
 
     time = stopwatch.stop_timer(f"coqchk_time")
     return time if success else -1
