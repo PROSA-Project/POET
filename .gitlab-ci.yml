@@ -1,0 +1,62 @@
+###################### Global Config ######################
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+
+stages:
+  - test
+
+.preferred-stable-version:
+    image: bbbrandenburg/prosa:0.5-mathcomp-1.15.0-coq-8.16
+
+###################### Rules and Scripts ##################
+
+.not_in_wip_branches:
+  rules:
+    - if: ($CI_COMMIT_BRANCH !~ /^wip-.*$/) || ($CI_PIPELINE_SOURCE == "merge_request_event")
+
+.only_in_wip_branches:
+  rules:
+    - if: ($CI_COMMIT_BRANCH =~ /^wip-.*$/) && ($CI_PIPELINE_SOURCE != "merge_request_event")
+
+########################## Setup ##########################
+
+.install-dependencies:
+  script:
+   - pip3 install --no-input --disable-pip-version-check -r requirements.txt
+
+########################## Tests  ##########################
+
+test-examples-with-stable-Prosa:
+  extends:
+    - .not_in_wip_branches
+    - .preferred-stable-version
+  stage: test
+  script:
+    - !reference [.install-dependencies, script]
+    - >-
+      for WORKLOAD in examples/*.yaml;
+      do
+        CERT=certs/cert-for-`basename $WORKLOAD`;
+        echo; echo; echo;
+        echo "==================";
+        echo "Testing $WORKLOAD:";
+        mkdir -p $CERT;
+        time ./poet -v -o $CERT -j ${NJOBS} -s $WORKLOAD | tee -a $CERT/output.txt;
+      done;
+      
+  artifacts:
+    name: "POET-example-certificates"
+    paths:
+      - "certs/"
+    exclude:
+      - certs/**/*.aux
+      - certs/**/*.vo
+      - certs/**/*.glob
+      - certs/**/*.vok
+      - certs/**/*.vos
+    expire_in: 1 week
