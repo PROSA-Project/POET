@@ -144,7 +144,7 @@ Section Certificate.
   Proof.
     move: (sched_valid arr_seq) => [ARR READY]. unfold preemptive_sched.sched in *.
     eapply uniprocessor_response_time_bound_fully_preemptive_edf
-      with (ts := map  taskT_to_task ts) (H4 := concrete_max_arrivals) (L := L).
+      with (ts := map  taskT_to_task ts) (L := L).
     - by done.
     - by done.
     - by done.

@@ -150,7 +150,7 @@ Section Certificate.
     move: (sched_valid arr_seq) => [ARR READY].
     unfold nonpreemptive_sched.sched, sched in *.
     eapply uniprocessor_response_time_bound_fully_nonpreemptive_edf
-      with (ts := map taskT_to_task ts) (H4 := concrete_max_arrivals) (L := L).
+      with (ts := map taskT_to_task ts) (L := L).
     - by done.
     - by done.
     - by done.

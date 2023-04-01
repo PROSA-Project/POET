@@ -116,7 +116,7 @@ Section Certificate.
     move: (sched_valid arr_seq) => [ARR READY].
     specialize (sequential_readiness_nonclairvoyance arr_seq) => NON_CL.
     eapply uniprocessor_response_time_bound_fully_preemptive_fp
-      with (ts := (map taskT_to_task ts)) (H3 := concrete_max_arrivals) (L := L).
+      with (ts := (map taskT_to_task ts)) (L := L).
     - by done.
     - by done.
     - by done.
