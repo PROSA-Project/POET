@@ -7,9 +7,14 @@ Require Export prosa.implementation.refinements.FP.nonpreemptive_sched.
 Require Export NArith.
 
 Section TaskSetDeclaration.
-    
-  $TASK_SET_DECLARATION$
+  (** In the following, all numeric constants should be interpreted as *binary*
+      numbers.  This is accomplished by opening the notation scope provided by
+      the [NArith] module. *)
+  Open Scope N_scope.
 
+  $TASK_SET_DECLARATION$
+  (** The above-declared tasks form the task set under analysis, which we denote
+      [ts] in the following. *)
   Definition ts := $TASK_SET_LIST$.
 
   Lemma arrival_curve_is_valid :

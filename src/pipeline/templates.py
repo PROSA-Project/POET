@@ -1,5 +1,6 @@
 import os
 from structures import pg
+from structures.task import TaskType
 
 TASK_SET_DECLARATION_FILE_NAME = "task_set"
 
@@ -43,6 +44,8 @@ WC_TASK_DEADLINE = "$TASK_DEADLINE$"
 WC_TASK_PRIORITY = "$TASK_PRIORITY$"
 WC_TASK_PERIOD = "$TASK_PERIOD$"
 WC_TASK_ARRIVAL = "$TASK_ARRIVAL$"
+WC_CURVE_HORIZON = "$HORIZON$"
+WC_CURVE_STEPS = "$STEPS$"
 
 WC_F_SOLUTIONS = "$F_SOLUTIONS$"
 
@@ -78,22 +81,62 @@ def get_main_certificate(problem_instance):
     return open(template_file_path, "r").read()
 
 
-def get_task_declaration(problem_instance):
+def get_task_declaration(problem_instance, t):
     if problem_instance.scheduling_policy == pg.EARLIEST_DEADLINE_FIRST:
-        return TEMPLATE_TASK_DECLARATION_NO_PRIORITY
+        if t.task_type == TaskType.PERIODIC:
+            return TEMPLATE_PERIODIC_TASK_DECLARATION_NO_PRIORITY
+        elif t.task_type == TaskType.SPORADIC:
+            return TEMPLATE_SPORADIC_TASK_DECLARATION_NO_PRIORITY
+        else:
+            return TEMPLATE_TASK_DECLARATION_NO_PRIORITY
     else:
-        return TEMPLATE_TASK_DECLARATION_PRIORITY
+        if t.task_type == TaskType.PERIODIC:
+            return TEMPLATE_PERIODIC_TASK_DECLARATION_PRIORITY
+        elif t.task_type == TaskType.SPORADIC:
+            return TEMPLATE_SPORADIC_TASK_DECLARATION_PRIORITY
+        else:
+            return TEMPLATE_TASK_DECLARATION_PRIORITY
 
 
 ########## Patches
-TEMPLATE_TASK_DECLARATION_PRIORITY = """Definition $TASK_NAME$ := {| 
-    id: $TASK_ID$ 
-    cost: $TASK_COST$ 
-    deadline: $TASK_DEADLINE$ 
-    arrival: $TASK_ARRIVAL$ 
-    priority: $TASK_PRIORITY$ }."""
-TEMPLATE_TASK_DECLARATION_NO_PRIORITY = """Definition $TASK_NAME$ := {| 
-    id: $TASK_ID$ 
-    cost: $TASK_COST$ 
-    deadline: $TASK_DEADLINE$ 
-    arrival: $TASK_ARRIVAL$ }."""
+TEMPLATE_TASK_DECLARATION_PRIORITY = """Definition $TASK_NAME$ :=
+  [TASK id: $TASK_ID$
+        cost: $TASK_COST$
+        deadline: $TASK_DEADLINE$
+        arrival: $TASK_ARRIVAL$
+        priority: $TASK_PRIORITY$].
+        """
+TEMPLATE_TASK_DECLARATION_NO_PRIORITY = """Definition $TASK_NAME$ :=
+  [TASK id: $TASK_ID$
+        cost: $TASK_COST$
+        deadline: $TASK_DEADLINE$
+        arrival: $TASK_ARRIVAL$].
+        """
+TEMPLATE_PERIODIC_TASK_DECLARATION_PRIORITY = """Definition $TASK_NAME$ :=
+  [PERIODIC-TASK id: $TASK_ID$
+        cost: $TASK_COST$
+        deadline: $TASK_DEADLINE$
+        period: $TASK_ARRIVAL$
+        priority: $TASK_PRIORITY$].
+        """
+TEMPLATE_PERIODIC_TASK_DECLARATION_NO_PRIORITY = """Definition $TASK_NAME$ :=
+  [PERIODIC-TASK id: $TASK_ID$
+        cost: $TASK_COST$
+        deadline: $TASK_DEADLINE$
+        period: $TASK_ARRIVAL$].
+        """
+TEMPLATE_SPORADIC_TASK_DECLARATION_PRIORITY = """Definition $TASK_NAME$ :=
+  [SPORADIC-TASK id: $TASK_ID$
+        cost: $TASK_COST$
+        deadline: $TASK_DEADLINE$
+        separation: $TASK_ARRIVAL$
+        priority: $TASK_PRIORITY$].
+        """
+TEMPLATE_SPORADIC_TASK_DECLARATION_NO_PRIORITY = """Definition $TASK_NAME$ :=
+  [SPORADIC-TASK id: $TASK_ID$
+        cost: $TASK_COST$
+        deadline: $TASK_DEADLINE$
+        separation: $TASK_ARRIVAL$].
+        """
+
+TEMPLATE_CURVE = "[CURVE horizon: $HORIZON$ steps: $STEPS$]"

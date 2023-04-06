@@ -10,9 +10,16 @@ Require Export prosa.model.readiness.sequential.
 Require Export NArith.
 
 Section TaskSetDeclaration.
-  $TASK_SET_DECLARATION$
+  (** In the following, all numeric constants should be interpreted as *binary*
+      numbers.  This is accomplished by opening the notation scope provided by
+      the [NArith] module. *)
+  Open Scope N_scope.
 
+  $TASK_SET_DECLARATION$
+  (** The above-declared tasks form the task set under analysis, which we denote
+      [ts] in the following. *)
   Definition ts := $TASK_SET_LIST$.
+
   Definition L := $MAX_BUSY_INTERVAL$.
 
   Lemma arrival_curve_is_valid :
@@ -40,6 +47,8 @@ Section TaskSetDeclaration.
     all: try by clear; rewrite [_ == _]refines_eq; vm_compute.
     all: by rewrite [valid_arrivals _]refines_eq; vm_compute.
   Qed.
+
+  Close Scope N_scope.
 
   Lemma task_cost_positive:
     forall tsk, tsk \in (map taskT_to_task ts) -> 0 < task_cost tsk.

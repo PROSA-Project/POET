@@ -85,42 +85,38 @@ def get_F_solutions(problem_instance, Fs):
 def task_set_declaration(problem_instance):
     # Generates Coq records from the given task set.
     # Syntax: `Let tsk1 := {| task_id := 1; task_deadline := 3; ... |}.`
-    template = templates.get_task_declaration(problem_instance)
-
-    declaration = ""
-    for t in problem_instance.task_set:
-        task_dec = template
+    def task_declaration(t):
+        task_dec = templates.get_task_declaration(problem_instance, t)
         task_dec = patch(task_dec, templates.WC_TASK_NAME, t.name())
-        task_dec = patch(task_dec, templates.WC_TASK_ID, f"{t.id}%N")
-        task_dec = patch(task_dec, templates.WC_TASK_COST, f"{t.wcet}%N")
-        task_dec = patch(task_dec, templates.WC_TASK_DEADLINE, f"{t.deadline}%N")
+        task_dec = patch(task_dec, templates.WC_TASK_ID, f"{t.id}")
+        task_dec = patch(task_dec, templates.WC_TASK_COST, f"{t.wcet}")
+        task_dec = patch(task_dec, templates.WC_TASK_DEADLINE, f"{t.deadline}")
 
         if problem_instance.scheduling_policy == pg.FIXED_PRIORITY:
             assert t.priority is not None
-            task_dec = patch(task_dec, templates.WC_TASK_PRIORITY, f"{t.priority}%N")
+            task_dec = patch(task_dec, templates.WC_TASK_PRIORITY, f"{t.priority}")
 
-        if t.task_type == TaskType.PERIODIC:
-            task_dec = patch(
-                task_dec, templates.WC_TASK_ARRIVAL, f"Periodic_T {t.period}%N"
-            )
-        if t.task_type == TaskType.SPORADIC:
-            task_dec = patch(
-                task_dec, templates.WC_TASK_ARRIVAL, f"Sporadic_T {t.period}%N"
-            )
+        if t.task_type in [TaskType.PERIODIC, TaskType.SPORADIC]:
+            task_dec = patch(task_dec, templates.WC_TASK_ARRIVAL, f"{t.period}")
         elif t.task_type == TaskType.ARRIVAL_CURVE:
-            task_dec = patch(
-                task_dec, templates.WC_TASK_ARRIVAL, emax_declaration(t.arrival_curve)
+            curve = templates.TEMPLATE_CURVE
+            curve = patch(curve, templates.WC_CURVE_HORIZON, f"{t.arrival_curve.h}")
+            curve = patch(
+                curve, templates.WC_CURVE_STEPS, f"{coq_list(t.arrival_curve.steps)}"
             )
+            task_dec = patch(task_dec, templates.WC_TASK_ARRIVAL, curve)
+        else:
+            assert False
+        return task_dec
 
-        declaration += task_dec + "\n"
-    declaration = declaration[:-1]  # Remove last new-line
-    return declaration
+    task_declarations = [task_declaration(t) for t in problem_instance.task_set]
+    return "\n".join(task_declarations)
 
 
 def coq_list(list):
     # Generates a Coq list declaration from the given list.
     # Syntax: `[:: el1; el2; ...]`.
-    xs = "[::" + ";".join(map(str, list)) + "]"
+    xs = "[:: " + "; ".join(map(str, list)) + "]"
     return xs
 
 
