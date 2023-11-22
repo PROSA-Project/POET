@@ -9,6 +9,12 @@ Require Export prosa.implementation.refinements.EDF.preemptive_sched.
 Require Export prosa.model.readiness.sequential.
 Require Export NArith.
 
+(** Recent versions of PROSA enable strict bullet checking, but
+    the POET certificates don't yet comply with this (purely
+    cosmetic) preference. So we disable the check here again. *)
+#[global] Set Bullet Behavior "None".
+#[global] Set Default Goal Selector "1".
+
 Section TaskSetDeclaration.
   (** In the following, all numeric constants should be interpreted as *binary*
       numbers.  This is accomplished by opening the notation scope provided by
