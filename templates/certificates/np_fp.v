@@ -2,7 +2,7 @@ $DECLARATION_START$
 Require Export prosa.implementation.refinements.FP.fast_search_space.
 Require Export prosa.implementation.refinements.FP.refinements.
 Require Export prosa.implementation.facts.job_constructor.
-Require Export prosa.results.fixed_priority.rta.fully_nonpreemptive.
+Require Export prosa.results.rta.ideal.fp.fully_nonpreemptive.
 Require Export prosa.implementation.refinements.FP.nonpreemptive_sched.
 Require Export NArith.
 

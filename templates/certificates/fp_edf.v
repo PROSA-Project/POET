@@ -3,7 +3,7 @@ Require Export prosa.implementation.refinements.EDF.fast_search_space.
 Require Export prosa.implementation.facts.job_constructor.
 Require Export prosa.implementation.refinements.EDF.refinements.
 Require Export prosa.implementation.definitions.task.
-Require Export prosa.results.edf.rta.fully_preemptive.
+Require Export prosa.results.rta.ideal.edf.fully_preemptive.
 Require Export prosa.implementation.refinements.EDF.preemptive_sched.
 Require Export prosa.implementation.refinements.EDF.preemptive_sched.
 Require Export prosa.model.readiness.sequential.

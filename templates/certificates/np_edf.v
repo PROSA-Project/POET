@@ -3,7 +3,7 @@ Require Export prosa.implementation.refinements.EDF.fast_search_space.
 Require Export prosa.implementation.facts.job_constructor.
 Require Export prosa.implementation.refinements.EDF.refinements.
 Require Export prosa.implementation.refinements.EDF.nonpreemptive_sched.
-Require Export prosa.results.edf.rta.fully_nonpreemptive.
+Require Export prosa.results.rta.ideal.edf.fully_nonpreemptive.
 Require Export prosa.model.readiness.sequential.
 Require Export NArith.
 
