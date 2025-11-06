@@ -1,1 +1,19 @@
-src/poet
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+function die {
+	echo "[EE] $*"
+	exit 1
+}
+
+TOOL="main.py"
+SRC="src"
+
+PROJECT_DIR="${SCRIPT_DIR}/${SRC}"
+TOOL_PATH="${PROJECT_DIR}/${TOOL}"
+
+MSG="Cannot find the uv Python project manager. Please see https://docs.astral.sh/uv/getting-started/installation/"
+which uv > /dev/null || die "$MSG"
+
+exec uv --quiet --project "${PROJECT_DIR}" run "${TOOL_PATH}" "$@"

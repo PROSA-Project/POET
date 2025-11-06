@@ -23,23 +23,19 @@ When using POET for academic work, please cite the following paper:
 
 POET requires two sets of dependencies: 
 
-1. A working Python installation, to run POET itself (it is a Python script). 
+1. A working Python installation with the [`uv` package manager](https://docs.astral.sh/uv/) in place, to run POET itself (it is a Python script launched via `uv`). 
 2. A working Rocq toolchain with the [Prosa framework](https://prosa.mpi-sws.org) installed, to compile and check the generated certificates.
 
 ### Python Dependencies
 
-POET will work with [Python 3.7](https://www.python.org/downloads/) or any later version. 
+POET has been tested with Python 3.14, but older versions down to 3.10 or so will likely work, too.
 
 Additionally, the following two Python packages are required:
 
 - [PyYAML](https://pypi.org/project/PyYAML/)
 - [joblib](https://pypi.org/project/joblib/)
 
-All Python dependencies can be easily installed with Python's `pip3` package manager:
-
-```
-pip3 install -r requirements.txt
-```
+The Python dependencies will be installed automatically by `uv` and do not have to be managed manually.
 
 ### Rocq Toolchain
 

@@ -1,6 +1,7 @@
 """
 This is the main module of the project.
 """
+
 DOCKERFILE_TEMPLATE_PATH = "templates/docker_certificates/Dockerfile"
 CERTIFICATE_CHECKER_PATH = "templates/docker_certificates/check_certificates.sh"
 GENERATED_FILE_TYPES = [
@@ -14,13 +15,18 @@ GENERATED_FILE_TYPES = [
 ]  # Used to delete old results on each run
 SKIP_VERIFICATION = False
 
-import os, shutil, subprocess, argparse, sys
-from re import TEMPLATE
+import argparse
+import os
+import shutil
 import stat
-from ..pipeline import parser, coq_generator, templates
-from utils import statistics, timing
-from structures.analysis_results import AnalysisResults
+import subprocess
+import sys
+
 from joblib import Parallel, delayed
+
+from pipeline import coq_generator, parser, templates
+from structures.analysis_results import AnalysisResults
+from utils import statistics, timing
 
 
 def run_poet():
@@ -83,13 +89,13 @@ def run_poet():
         sys.exit(0)
 
     if not bounded_tardiness_allowed:
-        assert (
-            analysis_results.all_deadlines_respected()
-        ), "There is a deadline violation, unable to generate certificates"
+        assert analysis_results.all_deadlines_respected(), (
+            "There is a deadline violation, unable to generate certificates"
+        )
     else:
-        assert (
-            analysis_results.respose_time_is_bounded()
-        ), "At least a response time is unbound, unable to generate certificates"
+        assert analysis_results.respose_time_is_bounded(), (
+            "At least a response time is unbound, unable to generate certificates"
+        )
 
     ######################################
     # Certificates generation
@@ -263,7 +269,9 @@ def run_poet():
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="The Proof Generation Tool")
+    parser = argparse.ArgumentParser(
+        prog="poet", description="POET: A foundational response-time analysis tool"
+    )
 
     parser.add_argument("input", help="Input file.")
 
@@ -447,3 +455,7 @@ def verify_certificate(
 
     time = stopwatch.stop_timer(f"coqchk_time")
     return time if success else -1
+
+
+if __name__ == "__main__":
+    run_poet()

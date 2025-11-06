@@ -63,7 +63,7 @@ def conditional_cut_patch(text, wildcard_start, wildcard_end, cut):
         assert wildcard_start in text
         assert wildcard_end in text
         wc_re = re.compile(
-            re.escape(wildcard_start) + "([\S\s]*)" + re.escape(wildcard_end),
+            re.escape(wildcard_start) + r"([\S\s]*)" + re.escape(wildcard_end),
             re.MULTILINE,
         )
         match = wc_re.search(text)
