@@ -5,7 +5,7 @@ Require Export prosa.implementation.refinements.EDF.refinements.
 Require Export prosa.implementation.refinements.EDF.nonpreemptive_sched.
 Require Export prosa.results.rta.ideal.edf.fully_nonpreemptive.
 Require Export prosa.model.readiness.sequential.
-Require Export NArith.
+From Stdlib Require Export NArith.
 
 (** Recent versions of PROSA enable strict bullet checking, but
     the POET certificates don't yet comply with this (purely
