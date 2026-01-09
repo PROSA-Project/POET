@@ -46,7 +46,8 @@ class NonPreemptiveEarliestDeadlineFirstRTA:
             F = blocking_bound + max(0, task_rbf - task_cost) + bound_hep - A
             return max(0, F)
 
-        fix_fun = lambda f, A=A: F_fixpoint(task_set, A, tsk, f)
+        def fix_fun(f, A=A):
+            return F_fixpoint(task_set, A, tsk, f)
         F = rt_utils.compute_fixpoint(fix_fun, 1)
         return F
 

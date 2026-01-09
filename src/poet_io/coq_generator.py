@@ -2,7 +2,6 @@
 This module handles the generation of the Coq proof file.
 """
 
-from posixpath import split
 
 from poet_io import templates
 from structures import pg

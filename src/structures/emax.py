@@ -2,9 +2,6 @@
 This module a step-based implementation of an eta-max curve (i.e., arrival curve).
 """
 
-import math
-from enum import Enum
-from utils import rt_utils
 
 
 class Emax:

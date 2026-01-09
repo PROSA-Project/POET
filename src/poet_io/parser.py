@@ -1,17 +1,19 @@
-""" 
+"""
 This module handles the parsing of the specification file.
 
 Basic specification errors (type checking, absence of information)
 are handled here, but specific validity checks (e.g. RBF monotone)
-are left to other modules. 
+are left to other modules.
 """
 
-import yaml
 import traceback
+
+import yaml
+
 from structures import pg
-from structures.task import Task
 from structures.emax import Emax
 from structures.problem_instance import ProblemInstance
+from structures.task import Task
 from utils import utils
 
 DEBUG_PARSER = True  # If true, prints tracebacks
@@ -72,8 +74,7 @@ def parse_file(file):
 
             parser_status = "parsing the task set information"
             expect_priority = scheduling_policy == pg.FIXED_PRIORITY
-            parse_fun = lambda t: parse_task(t, expect_priority)
-            task_set = list(map(parse_fun, task_set_object))
+            task_set = [parse_task(t, expect_priority) for t in task_set_object]
 
             parser_status = "finishing the task set creation"
             return ProblemInstance(scheduling_policy, preemption_model, task_set)
@@ -89,9 +90,9 @@ def check_for_allowed_tags(father, allowed_tags):
     # Checks that the tag of every object contained in `father` is
     # contained in the allowed-objects list.
     for key, _ in father.items():
-        assert (
-            key in allowed_tags
-        ), f"'{key}' is an unrecognized tag. Allowed tags are: {utils.pretty_list(allowed_tags)}."
+        assert key in allowed_tags, (
+            f"'{key}' is an unrecognized tag. Allowed tags are: {utils.pretty_list(allowed_tags)}."
+        )
 
 
 def parse_required(father, tag):
@@ -132,9 +133,9 @@ def parse_positive_number(father, tag):
 def parse_arrival_curve(father, curve_tag):
     # Given a father dictionary and a curve tag name, parses an arrival curve
     def parse_tuple(tuple):
-        assert isinstance(
-            tuple, list
-        ), "Each element of the curve must be a tuple of positive integers"
+        assert isinstance(tuple, list), (
+            "Each element of the curve must be a tuple of positive integers"
+        )
         assert len(tuple) == 2, "Each tuple in a curve must contain two elements."
         try:
             time = int(tuple[0])
@@ -150,16 +151,16 @@ def parse_arrival_curve(father, curve_tag):
 
     curve = parse_required(father, curve_tag)
 
-    assert (
-        isinstance(curve, list) and len(curve) == 2
-    ), "Curves must be of the form (h, [(t1,d1)] )."
+    assert isinstance(curve, list) and len(curve) == 2, (
+        "Curves must be of the form (h, [(t1,d1)] )."
+    )
     horizon = curve[0]
     steps = curve[1]
 
     assert isinstance(horizon, int), "Curves must be of the form (h, [(t1,d1)] )."
-    assert (
-        isinstance(curve, list) and len(curve) > 0
-    ), "Curves must be of the form (h, [(t1,d1)] )."
+    assert isinstance(curve, list) and len(curve) > 0, (
+        "Curves must be of the form (h, [(t1,d1)] )."
+    )
 
     steps = list(map(parse_tuple, steps))
     return Emax(horizon, steps)
@@ -186,19 +187,19 @@ def parse_task(task, expect_priority):
     has_arrival_curve = TASK_ARRIVAL_CURVE_TAG in task
     has_wcet = TASK_WCET_TAG in task
 
-    assert (
-        has_period + has_min_interarrival + has_arrival_curve == 1
-    ), f"One of these should be specified: {utils.pretty_list(task_request_models)}."
+    assert has_period + has_min_interarrival + has_arrival_curve == 1, (
+        f"One of these should be specified: {utils.pretty_list(task_request_models)}."
+    )
 
     yes_no = " " if expect_priority else " not "
-    assert (
-        has_priority == expect_priority
-    ), f"You should{yes_no}provide a priority for task with id {id}"
+    assert has_priority == expect_priority, (
+        f"You should{yes_no}provide a priority for task with id {id}"
+    )
 
     if has_period or has_min_interarrival:
-        assert (
-            has_wcet
-        ), "If a period or min interarrival is specified, a worst-case execution time is needed."
+        assert has_wcet, (
+            "If a period or min interarrival is specified, a worst-case execution time is needed."
+        )
 
         period = parse_positive_number(
             task, TASK_PERIOD_TAG if has_period else TASK_MIN_INTERARRIVAL_TAG
@@ -206,9 +207,9 @@ def parse_task(task, expect_priority):
         wcet = parse_positive_number(task, TASK_WCET_TAG)
         t = Task.task_with_period(id, deadline, period, wcet, has_min_interarrival)
     elif has_arrival_curve:
-        assert (
-            has_wcet
-        ), "If an arrival curve is specified, a worst-case execution time or a request-bound function is needed."
+        assert has_wcet, (
+            "If an arrival curve is specified, a worst-case execution time or a request-bound function is needed."
+        )
 
         arrival_curve = parse_arrival_curve(task, TASK_ARRIVAL_CURVE_TAG)
         wcet = parse_positive_number(task, TASK_WCET_TAG)

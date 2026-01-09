@@ -1,6 +1,4 @@
-import sys
 from structures import pg
-from utils import rt_utils
 
 
 class ProblemInstance:
@@ -22,7 +20,7 @@ class ProblemInstance:
         res = "\n------- Problem instance -------\n"
         res += f"scheduling policy: {self.scheduling_policy}\n"
         res += f"preemption model:  {self.preemption_model}\n"
-        res += f"Tasks:\n"
+        res += "Tasks:\n"
         for t in self.task_set:
             res += f"{str(t)}\n"
         res += "\n"

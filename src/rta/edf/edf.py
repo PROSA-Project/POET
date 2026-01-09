@@ -6,7 +6,8 @@ from utils import rt_utils
 
 
 def max_busy_interval(task_set, tsk):
-    f = lambda delta: total_request_bound_function(task_set, delta)
+    def f(delta):
+        return total_request_bound_function(task_set, delta)
     L = rt_utils.compute_fixpoint(f, 1)
     return L
 

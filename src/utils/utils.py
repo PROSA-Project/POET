@@ -4,7 +4,6 @@ This module contains miscellanea utility functions.
 
 import itertools
 import re
-from threading import currentThread
 
 
 # Returns a string containing all the elements of a given list in the form "a,b,c"

@@ -11,7 +11,8 @@ class FullyPreemptiveFixedPriorityRTA:
     ####################################
 
     def max_busy_interval(self, task_set, tsk):
-        f = lambda delta: fp.total_hep_rbf(task_set, tsk, delta)
+        def f(delta):
+            return fp.total_hep_rbf(task_set, tsk, delta)
         L = rt_utils.compute_fixpoint(f, 1)
         return L
 
@@ -34,7 +35,8 @@ class FullyPreemptiveFixedPriorityRTA:
 
             return max(task_rbf + bound_hep - A, 0)
 
-        fix_fun = lambda f, A=A: F_fixpoint(task_set, A, tsk, f)
+        def fix_fun(f, A=A):
+            return F_fixpoint(task_set, A, tsk, f)
         F = rt_utils.compute_fixpoint(fix_fun, 1)
         return F
 

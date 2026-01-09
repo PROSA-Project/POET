@@ -4,7 +4,6 @@ This module contains the specification of task and a task set.
 
 import math
 from enum import Enum
-from utils import rt_utils
 from structures.emax import Emax
 
 
@@ -30,7 +29,7 @@ class Task:
         elif self.task_type == TaskType.ARRIVAL_CURVE:
             task += f"arr. curve with {len(self.arrival_curve.steps)} steps, WCET={self.wcet}"
 
-        if self.priority != None:
+        if self.priority is not None:
             task += f", priority={self.priority}"
 
         task += ")"
@@ -61,7 +60,7 @@ class Task:
         return t
 
     def name(self):
-        return f"tsk%02d" % self.id
+        return "tsk%02d" % self.id
 
     def v_name(self):
         return f"{self.name()}.v"

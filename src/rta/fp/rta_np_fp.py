@@ -1,12 +1,9 @@
 """
-This module the calculations of the RTA fixpoints for Fully Preemptive Fixed Priority (FP-FP). 
+This module the calculations of the RTA fixpoints for Fully Preemptive Fixed Priority (FP-FP).
 """
 
-"""
-This module the calculations of the RTA fixpoints for Fully Preemptive Fixed Priority (FP-FP). 
-"""
-from utils import rt_utils
 import rta.fp.fp as fp
+from utils import rt_utils
 
 
 class NonPreemptiveFixedPriorityRTA:
@@ -25,9 +22,9 @@ class NonPreemptiveFixedPriorityRTA:
     ####################################
 
     def max_busy_interval(self, task_set, tsk):
-        f = lambda delta: self.blocking_bound[tsk.id] + fp.total_hep_rbf(
-            task_set, tsk, delta
-        )
+        def f(delta):
+            return self.blocking_bound[tsk.id] + fp.total_hep_rbf(task_set, tsk, delta)
+
         L = rt_utils.compute_fixpoint(f, 1)
         return L
 
@@ -56,7 +53,9 @@ class NonPreemptiveFixedPriorityRTA:
 
             return max(result, 0)
 
-        fix_fun = lambda F, A=A: F_fixpoint(task_set, A, tsk, F)
+        def fix_fun(F, A=A):
+            return F_fixpoint(task_set, A, tsk, F)
+
         F = rt_utils.compute_fixpoint(fix_fun, 1)
         return F
 

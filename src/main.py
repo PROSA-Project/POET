@@ -2,6 +2,18 @@
 This is the main module of the project.
 """
 
+import argparse
+import os
+import shutil
+import subprocess
+import sys
+
+from joblib import Parallel, delayed
+
+from poet_io import coq_generator, parser, templates
+from structures.analysis_results import AnalysisResults
+from utils import statistics, timing
+
 DOCKERFILE_TEMPLATE_PATH = "templates/docker_certificates/Dockerfile"
 CERTIFICATE_CHECKER_PATH = "templates/docker_certificates/check_certificates.sh"
 GENERATED_FILE_TYPES = [
@@ -14,19 +26,6 @@ GENERATED_FILE_TYPES = [
     ".aux",
 ]  # Used to delete old results on each run
 SKIP_VERIFICATION = False
-
-import argparse
-import os
-import shutil
-import stat
-import subprocess
-import sys
-
-from joblib import Parallel, delayed
-
-from poet_io import coq_generator, parser, templates
-from structures.analysis_results import AnalysisResults
-from utils import statistics, timing
 
 
 def run_poet():
@@ -81,11 +80,11 @@ def run_poet():
     if test_schedulability:
         print(analysis_results)
         if analysis_results.all_deadlines_respected():
-            print(f"Task set is schedulable")
+            print("Task set is schedulable")
         elif analysis_results.respose_time_is_bounded():
-            print(f"Task set is not schedulable, but response time is bound.")
+            print("Task set is not schedulable, but response time is bound.")
         else:
-            print(f"At least a response time is unbound.")
+            print("At least a response time is unbound.")
         sys.exit(0)
 
     if not bounded_tardiness_allowed:
@@ -122,7 +121,7 @@ def run_poet():
         )
 
         # Checking that all the declarations match
-        if external_declaration == None:
+        if external_declaration is None:
             external_declaration = proof_declaration
         else:
             assert proof_declaration == external_declaration
@@ -411,7 +410,7 @@ def save_certificate(path, certificate):
 
 def compile_certificate(prosa_path, certificates_path, certificate, external_dec):
     stopwatch = timing.Stopwatch()
-    stopwatch.start_timer(f"coq_time")
+    stopwatch.start_timer("coq_time")
     print(f"Compiling {certificate}...")
     cmd = [
         "coqc",
@@ -428,7 +427,7 @@ def compile_certificate(prosa_path, certificates_path, certificate, external_dec
         print(f"Compilation of {certificate} ended with return code {return_code}")
         sys.exit(return_code)
 
-    time = stopwatch.stop_timer(f"coq_time")
+    time = stopwatch.stop_timer("coq_time")
     return time if success else -1
 
 
@@ -438,7 +437,7 @@ def verify_certificate(
     if SKIP_VERIFICATION:
         return 0
     stopwatch = timing.Stopwatch()
-    stopwatch.start_timer(f"coqchk_time")
+    stopwatch.start_timer("coqchk_time")
     print(f"Verifying {certificate}...")
     cmd = ["coqchk", "-o", "-silent"]
     if prosa_path:
@@ -453,7 +452,7 @@ def verify_certificate(
         print(f"Verifying of {certificate} ended with return code {return_code}")
         sys.exit(return_code)
 
-    time = stopwatch.stop_timer(f"coqchk_time")
+    time = stopwatch.stop_timer("coqchk_time")
     return time if success else -1
 
 

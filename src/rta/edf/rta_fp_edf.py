@@ -32,7 +32,8 @@ class FullyPreemptiveEarliestDeadlineFirstRTA:
             bound_hep = edf.bound_on_total_hep_workload(task_set, tsk, A, A + F)
             return max(task_rbf + bound_hep - A, 0)
 
-        fix_fun = lambda f, A=A: F_fixpoint(task_set, A, tsk, f)
+        def fix_fun(f, A=A):
+            return F_fixpoint(task_set, A, tsk, f)
         F = rt_utils.compute_fixpoint(fix_fun, 1)
         return F
 

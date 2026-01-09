@@ -26,9 +26,9 @@ class TestPars(unittest.TestCase):
 
 class TestPars(unittest.TestCase):
     def test_example(self):
-        working = Emax(10, [[1, 1]])
-        working = Emax(10, [[1, 1], [2, 2]])
-        working = Emax(21, [[1, 9], [10, 10], [20, 19]])
+        Emax(10, [[1, 1]])
+        Emax(10, [[1, 1], [2, 2]])
+        Emax(21, [[1, 9], [10, 10], [20, 19]])
 
         broken = []
         broken += [[10, [[0, 0]]]]  # (0,0) in steps
@@ -41,7 +41,7 @@ class TestPars(unittest.TestCase):
         failed = [False for e in broken]
         for i in range(len(broken)):
             try:
-                e = Emax(broken[i][0], broken[i][1])
+                Emax(broken[i][0], broken[i][1])
             except:
                 failed[i] = True
 

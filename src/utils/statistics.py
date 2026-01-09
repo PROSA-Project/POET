@@ -49,7 +49,7 @@ class Statistics(yaml.YAMLObject):
         self.average_numerical_magnitude = avg_magnitude
         self.total_poet_time = stopwatch.get_time("total_poet_time")
         self.total_coq_time = stopwatch.get_time("total_coq_time")
-        if stopwatch.has_time(f"total_coqchk_time"):
+        if stopwatch.has_time("total_coqchk_time"):
             self.total_coqchk_time = stopwatch.get_time("total_coqchk_time")
         self.total_time = stopwatch.get_time("total_time")
 
