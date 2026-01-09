@@ -11,10 +11,10 @@ stages:
   - test
 
 .preferred-stable-version:
-    image: bbbrandenburg/prosa:0.5-mathcomp-1.15.0-coq-8.16
+    image: bbbrandenburg/prosa:0.6-mathcomp-2.4.0-rocq-9.0.0
 
 .preferred-dev-version:
-    image: bbbrandenburg/mathcomp-for-prosa:1.16.0-coq-8.16
+    image: bbbrandenburg/mathcomp-for-prosa:2.5.0-rocq-prover-9.0.0-rocq-core-9.1.0
 
 ###################### Rules and Scripts ##################
 
@@ -28,18 +28,14 @@ stages:
 
 ########################## Setup ##########################
 
-.install-dependencies:
-  script:
-   - pip3 install --no-input --disable-pip-version-check -r requirements.txt
-
 .install-Prosa-dev:
   script:
     - git clone --depth=1 https://gitlab.mpi-sws.org/RT-PROOFS/rt-proofs.git prosa
     - cd prosa
-    - opam pin add -n -y -k path coq-prosa .
-    - opam install -y -v -j ${NJOBS} coq-prosa
-    - opam pin add -n -y -k path coq-prosa-refinements .
-    - opam install -y -v -j ${NJOBS} coq-prosa-refinements
+    - opam pin add -n -y -k path rocq-prosa .
+    - opam install -y -v -j `getconf _NPROCESSORS_ONLN` rocq-prosa
+    - opam pin add -n -y -k path rocq-prosa-refinements .
+    - opam install -y -v -j `getconf _NPROCESSORS_ONLN` rocq-prosa-refinements
     - cd ..
 
 ########################## Tests  ##########################
@@ -54,7 +50,7 @@ stages:
         echo "==================";
         echo "Testing $WORKLOAD:";
         mkdir -p $CERT;
-        ./poet -v -o $CERT -j ${NJOBS} -s $WORKLOAD 2>&1 | tee -a $CERT/output.txt;
+        ./poet -v -o $CERT -j `getconf _NPROCESSORS_ONLN` -s $WORKLOAD 2>&1 | tee -a $CERT/output.txt;
       done;
       
 
@@ -64,7 +60,6 @@ test-examples-with-stable-Prosa:
     - .preferred-stable-version
   stage: test
   script:
-    - !reference [.install-dependencies, script]
     - !reference [.test-all-examples, script]
   artifacts:
     name: "POET-example-certificates"
@@ -85,7 +80,6 @@ test-examples-with-Prosa-dev:
     - .preferred-dev-version
   stage: test
   script:
-    - !reference [.install-dependencies, script]
     - !reference [.install-Prosa-dev, script]
     - !reference [.test-all-examples, script]
 
