@@ -4,7 +4,7 @@ This module handles the generation of the Coq proof file.
 
 from posixpath import split
 
-from pipeline import templates
+from poet_io import templates
 from structures import pg
 from structures.task import TaskType
 from utils.utils import conditional_cut_patch, patch

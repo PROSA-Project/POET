@@ -24,7 +24,7 @@ import sys
 
 from joblib import Parallel, delayed
 
-from pipeline import coq_generator, parser, templates
+from poet_io import coq_generator, parser, templates
 from structures.analysis_results import AnalysisResults
 from utils import statistics, timing
 
