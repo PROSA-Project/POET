@@ -2,11 +2,11 @@
 
 POET is the first implementation of a _foundational response-time analysis_. Both the tool and the approach are discussed in detail in an [ECRTS 2022 paper](https://drops.dagstuhl.de/opus/volltexte/2022/16336/pdf/LIPIcs-ECRTS-2022-19.pdf). 
 
-In short, given a YAML-encoded description of a workload comprised of sporadic or periodic real-time tasks to be scheduled on a uniprocessor, POET will first perform a response-time analysis and then generate a [Coq proof](https://coq.inria.fr) for each task that shows the computed response-time bound to be correct, i.e., a machine-checkable *certificate of correctness*. In other words, POET produces *proof-carrying response-time bounds* that can be verified independently of the (unverified) tool that computed them.
+In short, given a YAML-encoded description of a workload comprised of sporadic or periodic real-time tasks to be scheduled on a uniprocessor, POET will first perform a response-time analysis and then generate a [Rocq proof](https://[coq.inria.fr](https://rocq-prover.org)) for each task that shows the computed response-time bound to be correct, i.e., a machine-checkable *certificate of correctness*. In other words, POET produces *proof-carrying response-time bounds* that can be verified independently of the (unverified) tool that computed them.
 
 There are two primary benefits to the foundational approach realized by POET:
 
-1. *Trustworthy* results based on a small [TCB](https://en.wikipedia.org/wiki/Trusted_computing_base) containing only standard tools: Neither the underlying theory nor the implementation of the response-time analysis (i.e., POET itself) must be trusted. Only the Coq toolchain and its dependencies form the TCB.
+1. *Trustworthy* results based on a small [TCB](https://en.wikipedia.org/wiki/Trusted_computing_base) containing only standard tools: Neither the underlying theory nor the implementation of the response-time analysis (i.e., POET itself) must be trusted. Only the Rocq toolchain and its dependencies form the TCB.
 
 2. *Explainable* results: the generated certificates are designed for readability and can be explored by a human to any desired degree of scrutiny, up to the axioms of the underlying logic.
 
@@ -24,7 +24,7 @@ When using POET for academic work, please cite the following paper:
 POET requires two sets of dependencies: 
 
 1. A working Python installation, to run POET itself (it is a Python script). 
-2. A working Coq toolchain with the [Prosa framework](https://prosa.mpi-sws.org) installed, to compile and check the generated certificates.
+2. A working Rocq toolchain with the [Prosa framework](https://prosa.mpi-sws.org) installed, to compile and check the generated certificates.
 
 ### Python Dependencies
 
@@ -41,30 +41,30 @@ All Python dependencies can be easily installed with Python's `pip3` package man
 pip3 install -r requirements.txt
 ```
 
-### Coq Toolchain
+### Rocq Toolchain
 
-POET generates Coq-based certificates using the [Prosa library](https://prosa.mpi-sws.org), which provides the underlying verified real-time scheduling theory. To check the generated certificates, a working Coq toolchain and the Prosa library and its dependencies are hence required. 
+POET generates Rocq-based certificates using the [Prosa library](https://prosa.mpi-sws.org), which provides the underlying verified real-time scheduling theory. To check the generated certificates, a working Rocq toolchain and the Prosa library and its dependencies are hence required. 
 
-The easiest way to install the Coq environment is via the OCaml Package Manager [`opam`](https://opam.ocaml.org), which is readily packaged for most Linux distributions and macOS (see [the `opam` installation instructions](https://opam.ocaml.org/doc/Install.html) for details).
+The recommended way to install the Rocq environment is via the OCaml Package Manager [`opam`](https://opam.ocaml.org), which is readily packaged for most Linux distributions and macOS (see [the `opam` installation instructions](https://opam.ocaml.org/doc/Install.html) for details).
 
-Assuming `opam` has been installed and initialized, a working Coq environment suitable for POET can be set up as follows. 
+Assuming `opam` has been installed and initialized, a working Rocq environment suitable for POET can be set up as follows. 
 
 First, create a new `opam` "switch" (i.e., a new environment). 
 
 ```
-opam switch create Prosa-v0.5 4.13.1
+opam switch create Prosa-v0.6 4.14.2
 ```
 
 After the switch has been created, be sure to activate it in the current shell.
 
 ```
-eval $(opam env --switch=Prosa-v0.5)
+eval $(opam env --switch=Prosa-v0.6)
 ```
 
 Next, make `opam` aware of the official repository of stable Coq packages...
 
 ```
-opam repo add coq-released https://coq.inria.fr/opam/released
+opam repo add rocq-released https://rocq-prover.org/opam/released
 ```
 
 ... and pull in the latest package list.
@@ -73,10 +73,10 @@ opam repo add coq-released https://coq.inria.fr/opam/released
 opam update
 ```
 
-Finally, simply install Prosa version 0.5, which will pull in all necessary dependencies.
+Finally, simply install Prosa version 0.6 and its refinements package, which will pull in all necessary dependencies.
 
 ```
-opam install coq-prosa.0.5
+opam install rocq-prosa-refinements.0.6
 ```
 
 The compilation and installation of all packages will take some time.
@@ -94,17 +94,17 @@ A typical invocation of POET looks like this:
 
 This has the following effects: 
 
-- POET will read the problem instance contained in `path/to/my/workload.yaml` and produces a  `certificates/` folder in the same directory. The files inside the folder are compiled using the Coq toolchain found in the current `$PATH` (which should be installed with `opam` as described above).  
+- POET will read the problem instance contained in `path/to/my/workload.yaml` and produces a  `certificates/` folder in the same directory. The files inside the folder are compiled using the Rocq toolchain found in the current `$PATH` (which should be installed with `opam` as described above).  
 - The `-c` flag makes POET clean the `certificates/` folder (i.e., POET deletes any old files) before generating new certificates, which is helpful when running POET repeatedly. 
 - The `-s` flag causes POET to report some simple statistics on its runtime and the generated certificates.
 
 To create the certificates in a different location, pass the `-o` flag with the target directory. For example, 
 
 ```
-./poet -c -v -s -o /tmp/certificates path/to/my/workload.yaml
+./poet -c -v -s -o /tmp/certificates examples/paper.yaml
 ```
 
-will generate and compile the certificates in the folder `/tmp/certificates`. If the path does not exists, it is created.
+will generate and compile the certificates in the folder `/tmp/certificates`. If the path does not exist, it is created.
 
 Notably, when specifying the `-v` flag, POET will invoke `coqchk` *only* on the generated certificates, but will not check the dependencies of the certificates. Omit this flag to check everything (recommended, but slower). 
 
@@ -180,46 +180,85 @@ CONTEXT SUMMARY
 
 * Theory: Set is predicative
   
+* Theory: Rewrite rules are not allowed
+  
 * Axioms:
-    mathcomp.ssreflect.finset.Imset.imsetE
-    mathcomp.ssreflect.finset.Imset.imset2
-    mathcomp.fingroup.perm.PermDef.fun_of_perm
-    Coq.ssr.ssrunder.Under_rel.Over_rel
-    mathcomp.ssreflect.finfun.FinfunDef.finfunE
-    mathcomp.ssreflect.fintype.SubsetDef.subsetEdef
-    mathcomp.ssreflect.generic_quotient.MPi.f
-    mathcomp.ssreflect.generic_quotient.MPi.E
-    Coq.ssr.ssrunder.Under_rel.Under_rel_from_rel
-    mathcomp.ssreflect.fintype.Finite.EnumDef.enumDef
-    mathcomp.ssreflect.generic_quotient.Repr.f
-    mathcomp.ssreflect.generic_quotient.Repr.E
-    mathcomp.fingroup.perm.PermDef.fun_of_permE
-    mathcomp.ssreflect.finset.Imset.imset
-    Coq.Logic.ProofIrrelevance.proof_irrelevance
-    mathcomp.ssreflect.finset.Imset.imset2E
-    mathcomp.ssreflect.finset.SetDef.pred_of_set
-    mathcomp.ssreflect.finset.SetDef.finset
-    Coq.ssr.ssrunder.Under_rel.over_rel
+    mathcomp.ssreflect.finset.set1.unlock
+    mathcomp.algebra.mxalgebra.diffmx.body
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.land_spec
+    mathcomp.ssreflect.fintype.enum_rank_in.unlock
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.lor_spec
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.odd_bitwise
+    Corelib.ssr.ssrunder.Under_rel.Under_rel_from_rel
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.testbit_bitwise_2
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.testbit_bitwise_1
+    mathcomp.ssreflect.finset.finset.body
+    mathcomp.algebra.mxalgebra.capmx.body
+    mathcomp.ssreflect.finset.pred_of_set.unlock
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.testbit_odd_0
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.testbit_neg_r
+    mathcomp.fingroup.perm.perm.body
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.shiftl_spec_high
+    mathcomp.ssreflect.fintype.FiniteNES.Finite.enum.unlock
+    mathcomp.ssreflect.finfun.finfun.unlock
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.shiftl_spec_low
+    mathcomp.algebra.mxalgebra.addsmx.body
+    mathcomp.algebra.mxalgebra.mxrank.body
+    mathcomp.ssreflect.finset.imset.unlock
+    mathcomp.fingroup.fingroup.generated.body
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.shiftr_spec
+    mathcomp.algebra.matrix.matrix_of_fun.unlock
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.testbit_odd_succ
+    mathcomp.ssreflect.finset.set1.body
+    mathcomp.algebra.mxalgebra.Gaussian_elimination.unlock
+    Corelib.ssr.ssrunder.Under_rel.over_rel
+    mathcomp.ssreflect.fintype.enum_rank_in.body
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.div2_double
+    mathcomp.algebra.mxalgebra.genmx.unlock
+    mathcomp.ssreflect.finset.imset2.unlock
+    mathcomp.algebra.mxalgebra.submx.unlock
+    mathcomp.ssreflect.finset.pred_of_set.body
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.ldiff_spec
+    Corelib.ssr.ssrunder.Under_rel.over_rel_done
+    mathcomp.ssreflect.fintype.FiniteNES.Finite.enum.body
+    mathcomp.ssreflect.finfun.finfun.body
+    Corelib.ssr.ssrunder.Under_rel.Under_rel
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.testbit_even_succ
+    Stdlib.Logic.ProofIrrelevance.proof_irrelevance
+    mathcomp.ssreflect.finset.imset.body
+    mathcomp.algebra.matrix.matrix_of_fun.body
     mathcomp.ssreflect.tuple.FinTuple.enumP
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.div2_succ_double
     mathcomp.ssreflect.tuple.FinTuple.enum
-    mathcomp.ssreflect.bigop.BigOp.bigopE
-    Coq.ssr.ssrunder.Under_rel.over_rel_done
+    Corelib.ssr.ssrunder.Under_rel.Under_relE
     mathcomp.ssreflect.tuple.FinTuple.size_enum
-    mathcomp.ssreflect.finfun.FinfunDef.finfun
-    Coq.ssr.ssrunder.Under_rel.Under_rel
-    mathcomp.ssreflect.fintype.CardDef.card
-    mathcomp.ssreflect.fintype.CardDef.cardEdef
-    mathcomp.ssreflect.finset.SetDef.pred_of_setE
-    Coq.ssr.ssrunder.Under_rel.Under_relE
-    mathcomp.fingroup.perm.PermDef.permE
-    mathcomp.fingroup.perm.PermDef.perm
-    mathcomp.ssreflect.bigop.BigOp.bigop
-    mathcomp.ssreflect.fintype.SubsetDef.subset
-    mathcomp.ssreflect.generic_quotient.Pi.f
-    mathcomp.ssreflect.generic_quotient.Pi.E
-    mathcomp.ssreflect.fintype.Finite.EnumDef.enum
-    Coq.ssr.ssrunder.Under_rel.under_rel_done
-    mathcomp.ssreflect.finset.SetDef.finsetE
+    mathcomp.algebra.mxalgebra.Gaussian_elimination.body
+    mathcomp.ssreflect.fintype.subset.unlock
+    mathcomp.fingroup.perm.porbit.unlock
+    mathcomp.algebra.mxalgebra.genmx.body
+    mathcomp.fingroup.perm.fun_of_perm.unlock
+    mathcomp.ssreflect.finset.imset2.body
+    mathcomp.ssreflect.fintype.card.unlock
+    mathcomp.algebra.mxalgebra.submx.body
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.testbit_even_0
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.div2_bitwise
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.div2_spec
+    mathcomp.ssreflect.bigop.bigop.unlock
+    mathcomp.algebra.mxalgebra.diffmx.unlock
+    Corelib.ssr.ssrunder.Under_rel.under_rel_done
+    Stdlib.Arith.PeanoNat.Nat.PrivateImplementsBitwiseSpec.lxor_spec
+    mathcomp.ssreflect.finset.finset.unlock
+    mathcomp.algebra.mxalgebra.capmx.unlock
+    mathcomp.fingroup.perm.perm.unlock
+    mathcomp.ssreflect.fintype.subset.body
+    mathcomp.fingroup.perm.porbit.body
+    mathcomp.fingroup.perm.fun_of_perm.body
+    mathcomp.ssreflect.fintype.card.body
+    mathcomp.algebra.mxalgebra.addsmx.unlock
+    mathcomp.algebra.mxalgebra.mxrank.unlock
+    mathcomp.fingroup.fingroup.generated.unlock
+    Corelib.ssr.ssrunder.Under_rel.Over_rel
+    mathcomp.ssreflect.bigop.bigop.body
   
 * Constants/Inductives relying on type-in-type: <none>
   
@@ -233,7 +272,7 @@ The above output is repeated for each task (omitted here).
 
 Note that, in the output above, there are no references to admit or admitted proofs, but only to `Axioms`. There are two important points to note:
 
-1. The "axioms" starting with `mathcomp.*` and `Coq.*` are part of the Mathematical Components library and Coq standard library, respectively. Most of these are not axioms in the usual sense, but interfaces of Module Types, a Coq facility for generating generic modules (see [this tutorial](https://github.com/coq/coq/wiki/ModuleSystemTutorial) for an introduction). The one notable exception is `Coq.Logic.ProofIrrelevance.proof_irrelevance`, which is truly an axiom used by CoqEAL. 
+1. The "axioms" starting with `mathcomp.*`, `Corelib.*`, and `Stdlib.*` are part of the Mathematical Components and Rocq standard libraries. Most of these are not axioms in the usual sense, but interfaces of Module Types, a Rocq facility for generating generic modules (see [this tutorial](https://github.com/rocq-prover/rocq/wiki/ModuleSystemTutorial) for an introduction). The one notable exception is `Stdlib.Logic.ProofIrrelevance.proof_irrelevance`, which is truly an axiom used by CoqEAL. 
 
 2. Most importantly, there are no entries starting with `prosa.*` (the logical base directory of Prosa and POET), which implies that there are no axioms or admitted proofs in the generated files.
 
@@ -252,14 +291,14 @@ Avg numerical mag : 85
 
 #######      TIME STATS       #######
 Poet              : 0.00 s
-coq               : 3.21 s
-coqchk            : 3.54 s
+coq               : 7.28 s
+coqchk            : 4.89 s
 Other             : 0.00 s
-Total             : 6.75 s
+Total             : 12.17 s
 
 #######     TASKS STATS       #######
-tsk01    | R : 50 | L : 50 | SS: 2 | coq : 1.287811 | coqchk : 1.170234
-tsk02    | R : 60 | L : 80 | SS: 3 | coq : 1.294425 | coqchk : 1.190660
+tsk01    | R : 50 | L : 50 | SS: 2 | coq : 2.304908 | coqchk : 1.586764
+tsk02    | R : 60 | L : 80 | SS: 3 | coq : 2.302432 | coqchk : 1.597552
 ```
 
 Please refer to the paper for an intuitive explanation of how to interpret the generated certificates.
@@ -273,4 +312,4 @@ Merge requests welcome!
 
 ## License
 
-POET is free software and distributed under a BSD 2-Clause license. 
+POET is free software and distributed under a BSD 2-Clause license.
