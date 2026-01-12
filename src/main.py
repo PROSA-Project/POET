@@ -82,19 +82,25 @@ def run_poet():
         if analysis_results.all_deadlines_respected():
             print("Task set is schedulable")
         elif analysis_results.respose_time_is_bounded():
-            print("Task set is not schedulable, but response time is bound.")
+            print(
+                "Task set is not schedulable (deadlines may be missed),",
+                "but response times are bounded.",
+            )
         else:
-            print("At least a response time is unbound.")
+            print("At least one task has an unbounded response time.")
         sys.exit(0)
 
-    if not bounded_tardiness_allowed:
-        assert analysis_results.all_deadlines_respected(), (
-            "There is a deadline violation, unable to generate certificates"
+    if not bounded_tardiness_allowed and not analysis_results.all_deadlines_respected():
+        print("There is a deadline violation; unable to generate certificates.")
+        sys.exit(1)
+    elif bounded_tardiness_allowed and not analysis_results.respose_time_is_bounded():
+        print(
+            "At least one response time is unbounded; unable to generate certificates.",
+            f"\nTotal utilization: {problem_instance.total_utilization() * 100:.2f}%",
         )
-    else:
-        assert analysis_results.respose_time_is_bounded(), (
-            "At least a response time is unbound, unable to generate certificates"
-        )
+        for t in problem_instance.task_set:
+            print(f"- Task {t.id}: {t.utilization() * 100:.2f}%")
+        sys.exit(1)
 
     ######################################
     # Certificates generation
