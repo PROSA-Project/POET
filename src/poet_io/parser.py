@@ -11,9 +11,8 @@ import traceback
 import yaml
 
 from structures import pg
-from structures.emax import Emax
 from structures.problem_instance import ProblemInstance
-from structures.task import Task
+from structures.task import Emax, Task
 from utils import utils
 
 DEBUG_PARSER = True  # If true, prints tracebacks

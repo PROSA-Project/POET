@@ -1,10 +1,11 @@
 [project]
 name = "poet"
 version = "0.2.0"
-description = "a foundational response-time analysis (RTA) tool"
+description = "A foundational response-time analysis (RTA) tool"
 readme = "README.md"
 requires-python = ">=3.10.0"
 dependencies = [
     "joblib>=1.5.2",
     "pyyaml>=6.0.3",
+    "response-time-analysis>=0.1.1",
 ]

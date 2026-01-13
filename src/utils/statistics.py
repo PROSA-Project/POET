@@ -1,5 +1,4 @@
 import yaml
-from utils import utils
 
 
 class TaskStats(yaml.YAMLObject):
@@ -12,7 +11,7 @@ class TaskStats(yaml.YAMLObject):
         self.numerical_magnitude = task.numerical_magnitude()
         self.L = results.L
         self.R = results.R
-        self.search_space_size = utils.search_space_len(results.SS)
+        self.search_space_size = len(results.SS)
 
         # Time stats
         if stopwatch.has_time(f"{task.v_name()}_coq_time"):

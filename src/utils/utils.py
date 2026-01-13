@@ -72,29 +72,3 @@ def conditional_cut_patch(text, wildcard_start, wildcard_end, cut):
         text = text.replace(wildcard_start, "")
         text = text.replace(wildcard_end, "")
         return text, ""
-
-
-def pars(*sl):
-    # Splits a list of strings into a list of parameters.
-    # e.g. ["git commit -m", "initial commit"]
-    # becomes ["git", "commit", "-m", "initial", "commit"]
-    return list(itertools.chain.from_iterable((s.strip().split(" ") for s in sl)))
-
-
-def search_space_len(As):
-    if len(As) == 0:
-        return 0
-
-    if isinstance(As[0], list):  # EDF
-        return sum([len(tsk_ss) for tsk_ss in As])
-    else:  # FP
-        return len(As)
-
-
-def search_space(As):
-    space = []
-    for tsk_ss in As:
-        for k, tsk_ss_slice in tsk_ss:
-            space.extend(tsk_ss_slice)
-    space.sort()
-    return space

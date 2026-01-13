@@ -2,7 +2,6 @@
 This module handles the generation of the Coq proof file.
 """
 
-
 from poet_io import templates
 from structures import pg
 from structures.task import TaskType
@@ -71,16 +70,8 @@ def generate_proof(
 
 
 def get_F_solutions(problem_instance, Fs):
-    dec = ""
-    if problem_instance.scheduling_policy == pg.FIXED_PRIORITY:
-        fs_list = coq_list(Fs)
-        dec += f"Let Fs : seq N := {fs_list}%N.\n"
-    else:  # EARLIEST_DEADLINE_FIRST
-        Fs_merged = [F for Fs_task in Fs for F in Fs_task]
-        fs_list = coq_list(Fs_merged)
-        dec += f"Let Fs : seq N := {fs_list}%N.\n"
-
-    return dec[:-1]
+    fs_list = coq_list(Fs)
+    return f"Let Fs : seq N := {fs_list}%N.\n"
 
 
 def task_set_declaration(problem_instance):

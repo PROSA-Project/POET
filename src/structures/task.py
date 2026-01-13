@@ -2,15 +2,53 @@
 This module contains the specification of task and a task set.
 """
 
-import math
 from enum import Enum
-from structures.emax import Emax
+
+from response_time_analysis import model
+
+from . import pg
 
 
 class TaskType(Enum):
     PERIODIC = 0
     SPORADIC = 1
     ARRIVAL_CURVE = 2
+
+
+class Emax:
+    "Simple representation of an arrival-curve prefix."
+
+    def __init__(self, horizon, steps):
+        self.h = horizon
+        self.steps = steps
+        self.check_validity()
+
+    def __str__(self) -> str:
+        return f"[{self.h},{self.steps}]"
+
+    __repr__ = __str__
+
+    def check_validity(self):
+        assert len(self.steps) > 0
+
+        assert self.h > self.steps[-1][0], (
+            "The horizon must be greater than the last step"
+        )
+
+        assert self.steps[0][1] > 0, "The arrival curve must not contain zeros"
+
+        # If this condition does not hold, there is no hope for the prefix
+        # to be subadditive, as you can take the (1,1) decomposition which has
+        # value 0, so their sum is 0 as well
+        assert self.steps[0][0] == 1, "A window of size 1 must be specified"
+
+        # Checking strict monotonicity of steps
+        assert all(
+            self.steps[i][0] < self.steps[i + 1][0] for i in range(len(self.steps) - 1)
+        ), "steps must be monotonic"
+        assert all(
+            self.steps[i][1] < self.steps[i + 1][1] for i in range(len(self.steps) - 1)
+        ), "steps must be monotonic"
 
 
 class Task:
@@ -38,12 +76,31 @@ class Task:
 
     __repr__ = __str__
 
+    def to_rta_model(self, preemption_model: str) -> model.Task:
+        "Convert to the model representation expected by the response-time analysis library."
+
+        # currently limited to two preemption models due to a lack of parameters for the others
+        assert preemption_model in [pg.FULLY_PREEMPTIVE, pg.NON_PREEMPTIVE]
+
+        dl = model.Deadline(self.deadline)
+        prio = model.Priority(self.priority) if self.priority is not None else None
+        arrival = model.ArrivalCurvePrefix(
+            horizon=self.arrival_curve.h, ac_steps=self.arrival_curve.steps
+        )
+        wcet = model.WCET(self.wcet)
+        exec = (
+            model.FullyPreemptive(wcet)
+            if preemption_model == pg.FULLY_PREEMPTIVE
+            else model.FullyNonPreemptive(wcet)
+        )
+        return model.Task(arrival, exec, deadline=dl, priority=prio)
+
     @staticmethod
     def task_with_period(id, deadline, period, wcet, is_sporadic):
         # Can be a periodic or sporadic task
-        assert (
-            period > 0 and wcet > 0
-        ), "Period and worst-case execution time must be positive numbers."
+        assert period > 0 and wcet > 0, (
+            "Period and worst-case execution time must be positive numbers."
+        )
         t = Task(id, deadline, TaskType.SPORADIC if is_sporadic else TaskType.PERIODIC)
         t.period = period
         t.arrival_curve = Emax(period, [(1, 1)])
@@ -68,18 +125,6 @@ class Task:
     def vo_name(self):
         return f"{self.name()}.vo"
 
-    def task_request_bound_function(self, dt):
-        assert dt >= 0, "the interval dt must be non-negative"
-        if dt == 0:
-            return 0
-
-        if self.task_type == TaskType.ARRIVAL_CURVE:
-            return self.arrival_curve.at(dt) * self.wcet
-        elif self.task_type in [TaskType.PERIODIC, TaskType.SPORADIC]:
-            return int(math.ceil(dt / self.period)) * self.wcet
-        else:
-            raise NotImplementedError()
-
     def set_priority(self, priority):
         assert priority >= 0
         self.priority = priority
@@ -94,11 +139,4 @@ class Task:
             raise NotImplementedError()
 
     def utilization(self):
-        if self.task_type == TaskType.ARRIVAL_CURVE:
-            # Take the limit to infinity
-            h = self.arrival_curve.h * 10 ^ 20
-            return self.arrival_curve.at(h) * self.wcet / h
-        elif self.task_type in [TaskType.PERIODIC, TaskType.SPORADIC]:
-            return self.wcet / self.period
-        else:
-            raise NotImplementedError()
+        return self.arrival_curve.steps[-1][1] * self.wcet / self.arrival_curve.h

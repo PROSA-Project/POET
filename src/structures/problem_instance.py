@@ -1,3 +1,5 @@
+from response_time_analysis import model
+
 from structures import pg
 
 
@@ -12,9 +14,6 @@ class ProblemInstance:
         self.scheduling_policy = scheduling_policy
         self.preemption_model = preemption_model
         self.task_set = task_set
-        self.has_binary_implementation = (
-            scheduling_policy == pg.FIXED_PRIORITY
-        )  # TODO extend to every policy
 
     def __str__(self):
         res = "\n------- Problem instance -------\n"
@@ -30,3 +29,10 @@ class ProblemInstance:
 
     def total_utilization(self):
         return sum([task.utilization() for task in self.task_set])
+
+    def to_rta_model(self) -> model.TaskSet:
+        "Convert to the model representation expected by the response-time analysis library."
+        return model.taskset(
+            tsk.to_rta_model(preemption_model=self.preemption_model)
+            for tsk in self.task_set
+        )
