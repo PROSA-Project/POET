@@ -1,0 +1,144 @@
+scheduling policy: FP
+preemption model: NP
+task set:
+- id: 1
+  worst-case execution time: 1
+  arrival curve:
+  - 139
+  - - - 1
+      - 1
+    - - 9
+      - 2
+    - - 21
+      - 3
+    - - 34
+      - 4
+    - - 48
+      - 5
+    - - 68
+      - 6
+  deadline: 158
+  priority: 56
+- id: 2
+  worst-case execution time: 2
+  period: 25
+  deadline: 26
+  priority: 50
+- id: 3
+  worst-case execution time: 4
+  arrival curve:
+  - 477
+  - - - 1
+      - 1
+    - - 4
+      - 2
+    - - 13
+      - 3
+    - - 23
+      - 4
+    - - 37
+      - 5
+    - - 59
+      - 6
+    - - 86
+      - 7
+    - - 120
+      - 8
+    - - 162
+      - 9
+    - - 208
+      - 10
+    - - 257
+      - 11
+    - - 316
+      - 12
+    - - 378
+      - 13
+  deadline: 408
+  priority: 84
+- id: 4
+  worst-case execution time: 1
+  arrival curve:
+  - 172
+  - - - 1
+      - 1
+    - - 17
+      - 2
+    - - 37
+      - 3
+    - - 61
+      - 4
+    - - 85
+      - 5
+  deadline: 118
+  priority: 83
+- id: 5
+  worst-case execution time: 9
+  min interarrival: 94
+  deadline: 139
+  priority: 57
+- id: 6
+  worst-case execution time: 52
+  min interarrival: 763
+  deadline: 684
+  priority: 48
+- id: 7
+  worst-case execution time: 107
+  period: 912
+  deadline: 642
+  priority: 68
+- id: 8
+  worst-case execution time: 4
+  arrival curve:
+  - 155
+  - - - 1
+      - 1
+    - - 13
+      - 2
+    - - 35
+      - 3
+    - - 64
+      - 4
+  deadline: 113
+  priority: 11
+- id: 9
+  worst-case execution time: 3
+  arrival curve:
+  - 881
+  - - - 1
+      - 1
+    - - 19
+      - 2
+    - - 46
+      - 3
+    - - 75
+      - 4
+    - - 112
+      - 5
+    - - 150
+      - 6
+    - - 198
+      - 7
+    - - 255
+      - 8
+    - - 312
+      - 9
+    - - 379
+      - 10
+    - - 447
+      - 11
+    - - 523
+      - 12
+    - - 604
+      - 13
+    - - 693
+      - 14
+    - - 782
+      - 15
+  deadline: 1303
+  priority: 92
+- id: 10
+  worst-case execution time: 52
+  min interarrival: 586
+  deadline: 733
+  priority: 90

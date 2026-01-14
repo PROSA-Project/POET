@@ -1,0 +1,189 @@
+scheduling policy: EDF
+preemption model: FP
+task set:
+- id: 1
+  worst-case execution time: 89
+  period: 576
+  deadline: 841
+- id: 2
+  worst-case execution time: 66
+  min interarrival: 709
+  deadline: 972
+- id: 3
+  worst-case execution time: 21
+  min interarrival: 187
+  deadline: 236
+- id: 4
+  worst-case execution time: 1
+  arrival curve:
+  - 147
+  - - - 1
+      - 1
+    - - 13
+      - 2
+    - - 29
+      - 3
+    - - 52
+      - 4
+  deadline: 85
+- id: 5
+  worst-case execution time: 2
+  arrival curve:
+  - 570
+  - - - 1
+      - 1
+    - - 13
+      - 2
+    - - 32
+      - 3
+    - - 52
+      - 4
+    - - 81
+      - 5
+    - - 118
+      - 6
+    - - 161
+      - 7
+    - - 214
+      - 8
+    - - 277
+      - 9
+    - - 349
+      - 10
+    - - 431
+      - 11
+    - - 515
+      - 12
+  deadline: 601
+- id: 6
+  worst-case execution time: 120
+  period: 913
+  deadline: 517
+- id: 7
+  worst-case execution time: 7
+  arrival curve:
+  - 837
+  - - - 1
+      - 1
+    - - 9
+      - 2
+    - - 24
+      - 3
+    - - 48
+      - 4
+    - - 73
+      - 5
+    - - 100
+      - 6
+    - - 135
+      - 7
+    - - 172
+      - 8
+    - - 209
+      - 9
+    - - 255
+      - 10
+    - - 305
+      - 11
+    - - 355
+      - 12
+    - - 410
+      - 13
+    - - 474
+      - 14
+    - - 544
+      - 15
+    - - 614
+      - 16
+    - - 684
+      - 17
+    - - 758
+      - 18
+  deadline: 649
+- id: 8
+  worst-case execution time: 3
+  arrival curve:
+  - 1000
+  - - - 1
+      - 33
+    - - 18
+      - 34
+    - - 43
+      - 35
+    - - 68
+      - 36
+    - - 93
+      - 37
+    - - 118
+      - 38
+    - - 143
+      - 39
+    - - 168
+      - 40
+    - - 193
+      - 41
+    - - 218
+      - 42
+    - - 243
+      - 43
+    - - 268
+      - 44
+    - - 293
+      - 45
+    - - 318
+      - 46
+    - - 343
+      - 47
+    - - 368
+      - 48
+    - - 393
+      - 49
+    - - 418
+      - 50
+    - - 443
+      - 51
+    - - 468
+      - 52
+    - - 493
+      - 53
+    - - 518
+      - 54
+    - - 543
+      - 55
+    - - 568
+      - 56
+    - - 593
+      - 57
+    - - 618
+      - 58
+    - - 643
+      - 59
+    - - 668
+      - 60
+    - - 693
+      - 61
+    - - 718
+      - 62
+    - - 743
+      - 63
+    - - 768
+      - 64
+    - - 793
+      - 65
+    - - 818
+      - 66
+    - - 843
+      - 67
+    - - 868
+      - 68
+    - - 893
+      - 69
+    - - 918
+      - 70
+    - - 943
+      - 71
+    - - 968
+      - 72
+    - - 993
+      - 73
+  deadline: 17

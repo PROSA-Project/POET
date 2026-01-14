@@ -1,0 +1,156 @@
+scheduling policy: EDF
+preemption model: NP
+task set:
+- id: 1
+  worst-case execution time: 11
+  arrival curve:
+  - 734
+  - - - 1
+      - 1
+    - - 19
+      - 2
+    - - 44
+      - 3
+    - - 76
+      - 4
+    - - 114
+      - 5
+    - - 152
+      - 6
+    - - 192
+      - 7
+    - - 242
+      - 8
+    - - 293
+      - 9
+    - - 351
+      - 10
+    - - 414
+      - 11
+    - - 481
+      - 12
+    - - 556
+      - 13
+    - - 636
+      - 14
+  deadline: 934
+- id: 2
+  worst-case execution time: 23
+  min interarrival: 314
+  deadline: 211
+- id: 3
+  worst-case execution time: 9
+  arrival curve:
+  - 845
+  - - - 1
+      - 1
+    - - 20
+      - 2
+    - - 44
+      - 3
+    - - 77
+      - 4
+    - - 110
+      - 5
+    - - 144
+      - 6
+    - - 186
+      - 7
+    - - 233
+      - 8
+    - - 284
+      - 9
+    - - 335
+      - 10
+    - - 387
+      - 11
+    - - 445
+      - 12
+    - - 503
+      - 13
+    - - 563
+      - 14
+    - - 623
+      - 15
+    - - 685
+      - 16
+    - - 757
+      - 17
+  deadline: 1248
+- id: 4
+  worst-case execution time: 6
+  arrival curve:
+  - 166
+  - - - 1
+      - 1
+    - - 19
+      - 2
+    - - 46
+      - 3
+    - - 78
+      - 4
+  deadline: 178
+- id: 5
+  worst-case execution time: 2
+  arrival curve:
+  - 401
+  - - - 1
+      - 1
+    - - 14
+      - 2
+    - - 36
+      - 3
+    - - 64
+      - 4
+    - - 102
+      - 5
+    - - 148
+      - 6
+    - - 202
+      - 7
+    - - 261
+      - 8
+    - - 329
+      - 9
+  deadline: 333
+- id: 6
+  worst-case execution time: 7
+  arrival curve:
+  - 883
+  - - - 1
+      - 1
+    - - 18
+      - 2
+    - - 42
+      - 3
+    - - 66
+      - 4
+    - - 95
+      - 5
+    - - 133
+      - 6
+    - - 177
+      - 7
+    - - 224
+      - 8
+    - - 279
+      - 9
+    - - 343
+      - 10
+    - - 417
+      - 11
+    - - 491
+      - 12
+    - - 569
+      - 13
+    - - 650
+      - 14
+    - - 732
+      - 15
+    - - 820
+      - 16
+  deadline: 965
+- id: 7
+  worst-case execution time: 42
+  min interarrival: 611
+  deadline: 319

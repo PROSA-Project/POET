@@ -1,0 +1,151 @@
+scheduling policy: FP
+preemption model: FP
+task set:
+- id: 1
+  worst-case execution time: 25
+  min interarrival: 157
+  deadline: 166
+  priority: 51
+- id: 2
+  worst-case execution time: 2
+  arrival curve:
+  - 121
+  - - - 1
+      - 1
+    - - 16
+      - 2
+    - - 31
+      - 3
+    - - 52
+      - 4
+  deadline: 128
+  priority: 37
+- id: 3
+  worst-case execution time: 2
+  arrival curve:
+  - 153
+  - - - 1
+      - 1
+    - - 17
+      - 2
+    - - 33
+      - 3
+    - - 59
+      - 4
+    - - 86
+      - 5
+  deadline: 124
+  priority: 72
+- id: 4
+  worst-case execution time: 12
+  arrival curve:
+  - 1570
+  - - - 1
+      - 1
+    - - 10
+      - 2
+    - - 26
+      - 3
+    - - 52
+      - 4
+    - - 87
+      - 5
+    - - 131
+      - 6
+    - - 184
+      - 7
+    - - 239
+      - 8
+    - - 304
+      - 9
+    - - 373
+      - 10
+    - - 451
+      - 11
+    - - 538
+      - 12
+    - - 635
+      - 13
+    - - 741
+      - 14
+    - - 855
+      - 15
+    - - 972
+      - 16
+    - - 1096
+      - 17
+    - - 1226
+      - 18
+    - - 1366
+      - 19
+    - - 1506
+      - 20
+  deadline: 984
+  priority: 84
+- id: 5
+  worst-case execution time: 6
+  period: 50
+  deadline: 65
+  priority: 92
+- id: 6
+  worst-case execution time: 4
+  arrival curve:
+  - 179
+  - - - 1
+      - 1
+    - - 13
+      - 2
+    - - 31
+      - 3
+    - - 49
+      - 4
+    - - 68
+      - 5
+    - - 87
+      - 6
+    - - 113
+      - 7
+  deadline: 213
+  priority: 1
+- id: 7
+  worst-case execution time: 5
+  arrival curve:
+  - 1151
+  - - - 1
+      - 1
+    - - 15
+      - 2
+    - - 36
+      - 3
+    - - 60
+      - 4
+    - - 94
+      - 5
+    - - 135
+      - 6
+    - - 178
+      - 7
+    - - 231
+      - 8
+    - - 294
+      - 9
+    - - 357
+      - 10
+    - - 426
+      - 11
+    - - 500
+      - 12
+    - - 582
+      - 13
+    - - 665
+      - 14
+    - - 755
+      - 15
+    - - 848
+      - 16
+    - - 947
+      - 17
+    - - 1055
+      - 18
+  deadline: 581
+  priority: 92

@@ -1,0 +1,147 @@
+scheduling policy: EDF
+preemption model: NP
+task set:
+- id: 1
+  worst-case execution time: 28
+  period: 467
+  deadline: 698
+- id: 2
+  worst-case execution time: 79
+  period: 716
+  deadline: 414
+- id: 3
+  worst-case execution time: 4
+  arrival curve:
+  - 257
+  - - - 1
+      - 1
+    - - 19
+      - 2
+    - - 45
+      - 3
+    - - 77
+      - 4
+    - - 110
+      - 5
+    - - 146
+      - 6
+    - - 189
+      - 7
+  deadline: 151
+- id: 4
+  worst-case execution time: 99
+  min interarrival: 983
+  deadline: 1395
+- id: 5
+  worst-case execution time: 13
+  arrival curve:
+  - 1000
+  - - - 1
+      - 2
+    - - 88
+      - 3
+    - - 338
+      - 4
+    - - 588
+      - 5
+    - - 838
+      - 6
+  deadline: 275
+- id: 6
+  worst-case execution time: 7
+  arrival curve:
+  - 1000
+  - - - 1
+      - 14
+    - - 53
+      - 15
+    - - 107
+      - 16
+    - - 161
+      - 17
+    - - 215
+      - 18
+    - - 269
+      - 19
+    - - 323
+      - 20
+    - - 377
+      - 21
+    - - 431
+      - 22
+    - - 485
+      - 23
+    - - 539
+      - 24
+    - - 593
+      - 25
+    - - 647
+      - 26
+    - - 701
+      - 27
+    - - 755
+      - 28
+    - - 809
+      - 29
+    - - 863
+      - 30
+    - - 917
+      - 31
+    - - 971
+      - 32
+  deadline: 76
+- id: 7
+  worst-case execution time: 6
+  arrival curve:
+  - 1236
+  - - - 1
+      - 1
+    - - 9
+      - 2
+    - - 19
+      - 3
+    - - 33
+      - 4
+    - - 56
+      - 5
+    - - 88
+      - 6
+    - - 125
+      - 7
+    - - 169
+      - 8
+    - - 215
+      - 9
+    - - 267
+      - 10
+    - - 325
+      - 11
+    - - 391
+      - 12
+    - - 461
+      - 13
+    - - 531
+      - 14
+    - - 611
+      - 15
+    - - 695
+      - 16
+    - - 786
+      - 17
+    - - 880
+      - 18
+    - - 974
+      - 19
+    - - 1070
+      - 20
+    - - 1167
+      - 21
+  deadline: 779
+- id: 8
+  worst-case execution time: 78
+  min interarrival: 973
+  deadline: 1347
+- id: 9
+  worst-case execution time: 11
+  period: 84
+  deadline: 63

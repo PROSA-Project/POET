@@ -1,0 +1,158 @@
+scheduling policy: FP
+preemption model: NP
+task set:
+- id: 1
+  worst-case execution time: 5
+  arrival curve:
+  - 1125
+  - - - 1
+      - 1
+    - - 5
+      - 2
+    - - 14
+      - 3
+    - - 29
+      - 4
+    - - 46
+      - 5
+    - - 69
+      - 6
+    - - 101
+      - 7
+    - - 137
+      - 8
+    - - 176
+      - 9
+    - - 215
+      - 10
+    - - 257
+      - 11
+    - - 307
+      - 12
+    - - 360
+      - 13
+    - - 420
+      - 14
+    - - 490
+      - 15
+    - - 563
+      - 16
+    - - 644
+      - 17
+    - - 733
+      - 18
+    - - 826
+      - 19
+    - - 928
+      - 20
+    - - 1038
+      - 21
+  deadline: 757
+  priority: 68
+- id: 2
+  worst-case execution time: 74
+  arrival curve:
+  - 1000
+  - - - 1
+      - 2
+    - - 496
+      - 3
+    - - 996
+      - 4
+  deadline: 416
+  priority: 66
+- id: 3
+  worst-case execution time: 7
+  arrival curve:
+  - 497
+  - - - 1
+      - 1
+    - - 10
+      - 2
+    - - 23
+      - 3
+    - - 45
+      - 4
+    - - 72
+      - 5
+    - - 99
+      - 6
+    - - 131
+      - 7
+    - - 173
+      - 8
+    - - 221
+      - 9
+    - - 271
+      - 10
+    - - 323
+      - 11
+    - - 377
+      - 12
+    - - 435
+      - 13
+  deadline: 591
+  priority: 85
+- id: 4
+  worst-case execution time: 7
+  arrival curve:
+  - 650
+  - - - 1
+      - 1
+    - - 18
+      - 2
+    - - 37
+      - 3
+    - - 58
+      - 4
+    - - 88
+      - 5
+    - - 127
+      - 6
+    - - 176
+      - 7
+    - - 228
+      - 8
+    - - 283
+      - 9
+    - - 347
+      - 10
+    - - 414
+      - 11
+    - - 484
+      - 12
+    - - 559
+      - 13
+  deadline: 930
+  priority: 87
+- id: 5
+  worst-case execution time: 5
+  arrival curve:
+  - 382
+  - - - 1
+      - 1
+    - - 9
+      - 2
+    - - 25
+      - 3
+    - - 46
+      - 4
+    - - 75
+      - 5
+    - - 107
+      - 6
+    - - 144
+      - 7
+    - - 184
+      - 8
+    - - 233
+      - 9
+    - - 285
+      - 10
+  deadline: 278
+  priority: 84
+- id: 6
+  worst-case execution time: 167
+  min interarrival: 987
+  deadline: 1411
+  priority: 91

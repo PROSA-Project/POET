@@ -3,18 +3,18 @@
 workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+    - if: "$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS"
       when: never
-    - if: '$CI_COMMIT_BRANCH'
+    - if: "$CI_COMMIT_BRANCH"
 
 stages:
   - test
 
 .preferred-stable-version:
-    image: bbbrandenburg/prosa:0.6-mathcomp-2.4.0-rocq-9.0.0
+  image: bbbrandenburg/prosa:0.6-mathcomp-2.4.0-rocq-9.0.0
 
 .preferred-dev-version:
-    image: bbbrandenburg/mathcomp-for-prosa:2.5.0-rocq-prover-9.0.0-rocq-core-9.1.0
+  image: bbbrandenburg/mathcomp-for-prosa:2.5.0-rocq-prover-9.0.0-rocq-core-9.1.0
 
 ###################### Rules and Scripts ##################
 
@@ -52,7 +52,6 @@ stages:
         mkdir -p $CERT;
         ./poet -v -o $CERT -j `getconf _NPROCESSORS_ONLN` -s $WORKLOAD 2>&1 | tee -a $CERT/output.txt;
       done;
-      
 
 test-examples-with-stable-Prosa:
   extends:
@@ -73,7 +72,6 @@ test-examples-with-stable-Prosa:
       - certs/**/*.vos
     expire_in: 1 week
 
-
 test-examples-with-Prosa-dev:
   extends:
     - .only_in_wip_branches
@@ -83,3 +81,19 @@ test-examples-with-Prosa-dev:
     - !reference [.install-Prosa-dev, script]
     - !reference [.test-all-examples, script]
 
+random-test-cases:
+  extends:
+    - .not_in_wip_branches
+    - .preferred-stable-version
+  stage: test
+  script:
+    - >-
+      for WORKLOAD in `ls test-cases/*.yaml | sort -R | head -10`;
+      do
+        CERT=certs/cert-for-test-case-`basename $WORKLOAD`;
+        echo; echo; echo;
+        echo "==================";
+        echo "Testing $WORKLOAD:";
+        mkdir -p $CERT;
+        ./poet -v -o $CERT -j `getconf _NPROCESSORS_ONLN` -b -s $WORKLOAD 2>&1 | tee -a $CERT/output.txt;
+      done;

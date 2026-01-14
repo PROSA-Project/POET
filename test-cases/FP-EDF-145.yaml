@@ -1,0 +1,161 @@
+scheduling policy: EDF
+preemption model: FP
+task set:
+- id: 1
+  worst-case execution time: 16
+  arrival curve:
+  - 1000
+  - - - 1
+      - 4
+    - - 113
+      - 5
+    - - 329
+      - 6
+    - - 545
+      - 7
+    - - 761
+      - 8
+    - - 977
+      - 9
+  deadline: 253
+- id: 2
+  worst-case execution time: 2
+  arrival curve:
+  - 635
+  - - - 1
+      - 1
+    - - 15
+      - 2
+    - - 34
+      - 3
+    - - 59
+      - 4
+    - - 93
+      - 5
+    - - 136
+      - 6
+    - - 183
+      - 7
+    - - 230
+      - 8
+    - - 287
+      - 9
+    - - 352
+      - 10
+    - - 422
+      - 11
+    - - 494
+      - 12
+    - - 566
+      - 13
+  deadline: 321
+- id: 3
+  worst-case execution time: 79
+  period: 512
+  deadline: 616
+- id: 4
+  worst-case execution time: 3
+  arrival curve:
+  - 294
+  - - - 1
+      - 1
+    - - 19
+      - 2
+    - - 47
+      - 3
+    - - 76
+      - 4
+    - - 106
+      - 5
+    - - 139
+      - 6
+    - - 177
+      - 7
+    - - 217
+      - 8
+  deadline: 290
+- id: 5
+  worst-case execution time: 4
+  arrival curve:
+  - 1138
+  - - - 1
+      - 1
+    - - 11
+      - 2
+    - - 31
+      - 3
+    - - 61
+      - 4
+    - - 94
+      - 5
+    - - 131
+      - 6
+    - - 178
+      - 7
+    - - 232
+      - 8
+    - - 296
+      - 9
+    - - 363
+      - 10
+    - - 431
+      - 11
+    - - 508
+      - 12
+    - - 586
+      - 13
+    - - 665
+      - 14
+    - - 753
+      - 15
+    - - 850
+      - 16
+    - - 952
+      - 17
+    - - 1060
+      - 18
+  deadline: 1124
+- id: 6
+  worst-case execution time: 42
+  period: 500
+  deadline: 435
+- id: 7
+  worst-case execution time: 5
+  arrival curve:
+  - 194
+  - - - 1
+      - 1
+    - - 16
+      - 2
+    - - 37
+      - 3
+    - - 59
+      - 4
+    - - 81
+      - 5
+    - - 111
+      - 6
+    - - 144
+      - 7
+  deadline: 231
+- id: 8
+  worst-case execution time: 30
+  period: 250
+  deadline: 232
+- id: 9
+  worst-case execution time: 1
+  arrival curve:
+  - 215
+  - - - 1
+      - 1
+    - - 14
+      - 2
+    - - 33
+      - 3
+    - - 61
+      - 4
+    - - 98
+      - 5
+    - - 137
+      - 6
+  deadline: 171

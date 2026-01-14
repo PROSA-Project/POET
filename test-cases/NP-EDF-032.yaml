@@ -1,0 +1,11 @@
+scheduling policy: EDF
+preemption model: NP
+task set:
+- id: 1
+  worst-case execution time: 56
+  period: 100
+  deadline: 103
+- id: 2
+  worst-case execution time: 168
+  period: 500
+  deadline: 552

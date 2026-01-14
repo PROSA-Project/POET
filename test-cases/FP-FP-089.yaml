@@ -1,0 +1,149 @@
+scheduling policy: FP
+preemption model: FP
+task set:
+- id: 1
+  worst-case execution time: 46
+  period: 218
+  deadline: 302
+  priority: 13
+- id: 2
+  worst-case execution time: 2
+  arrival curve:
+  - 531
+  - - - 1
+      - 1
+    - - 5
+      - 2
+    - - 19
+      - 3
+    - - 39
+      - 4
+    - - 59
+      - 5
+    - - 85
+      - 6
+    - - 120
+      - 7
+    - - 155
+      - 8
+    - - 190
+      - 9
+    - - 229
+      - 10
+    - - 272
+      - 11
+    - - 319
+      - 12
+    - - 376
+      - 13
+    - - 436
+      - 14
+  deadline: 389
+  priority: 78
+- id: 3
+  worst-case execution time: 3
+  arrival curve:
+  - 1084
+  - - - 1
+      - 1
+    - - 17
+      - 2
+    - - 35
+      - 3
+    - - 60
+      - 4
+    - - 90
+      - 5
+    - - 120
+      - 6
+    - - 154
+      - 7
+    - - 198
+      - 8
+    - - 242
+      - 9
+    - - 296
+      - 10
+    - - 351
+      - 11
+    - - 413
+      - 12
+    - - 480
+      - 13
+    - - 548
+      - 14
+    - - 617
+      - 15
+    - - 688
+      - 16
+    - - 759
+      - 17
+    - - 832
+      - 18
+    - - 912
+      - 19
+    - - 995
+      - 20
+  deadline: 1215
+  priority: 48
+- id: 4
+  worst-case execution time: 9
+  arrival curve:
+  - 856
+  - - - 1
+      - 1
+    - - 4
+      - 2
+    - - 11
+      - 3
+    - - 25
+      - 4
+    - - 43
+      - 5
+    - - 66
+      - 6
+    - - 94
+      - 7
+    - - 124
+      - 8
+    - - 154
+      - 9
+    - - 187
+      - 10
+    - - 221
+      - 11
+    - - 261
+      - 12
+    - - 305
+      - 13
+    - - 358
+      - 14
+    - - 421
+      - 15
+    - - 488
+      - 16
+    - - 562
+      - 17
+    - - 636
+      - 18
+    - - 719
+      - 19
+    - - 802
+      - 20
+  deadline: 495
+  priority: 32
+- id: 5
+  worst-case execution time: 47
+  min interarrival: 280
+  deadline: 169
+  priority: 86
+- id: 6
+  worst-case execution time: 106
+  period: 946
+  deadline: 572
+  priority: 13
+- id: 7
+  worst-case execution time: 10
+  min interarrival: 181
+  deadline: 200
+  priority: 97

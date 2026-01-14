@@ -1,0 +1,173 @@
+scheduling policy: EDF
+preemption model: NP
+task set:
+- id: 1
+  worst-case execution time: 41
+  arrival curve:
+  - 1000
+  - - - 1
+      - 1
+    - - 132
+      - 2
+    - - 344
+      - 3
+    - - 556
+      - 4
+    - - 768
+      - 5
+    - - 980
+      - 6
+  deadline: 282
+- id: 2
+  worst-case execution time: 4
+  arrival curve:
+  - 1114
+  - - - 1
+      - 1
+    - - 6
+      - 2
+    - - 14
+      - 3
+    - - 26
+      - 4
+    - - 47
+      - 5
+    - - 72
+      - 6
+    - - 103
+      - 7
+    - - 141
+      - 8
+    - - 183
+      - 9
+    - - 226
+      - 10
+    - - 269
+      - 11
+    - - 318
+      - 12
+    - - 373
+      - 13
+    - - 433
+      - 14
+    - - 497
+      - 15
+    - - 571
+      - 16
+    - - 650
+      - 17
+    - - 737
+      - 18
+    - - 832
+      - 19
+    - - 936
+      - 20
+    - - 1047
+      - 21
+  deadline: 1484
+- id: 3
+  worst-case execution time: 3
+  arrival curve:
+  - 766
+  - - - 1
+      - 1
+    - - 8
+      - 2
+    - - 23
+      - 3
+    - - 47
+      - 4
+    - - 72
+      - 5
+    - - 99
+      - 6
+    - - 136
+      - 7
+    - - 176
+      - 8
+    - - 225
+      - 9
+    - - 278
+      - 10
+    - - 332
+      - 11
+    - - 396
+      - 12
+    - - 469
+      - 13
+    - - 543
+      - 14
+    - - 623
+      - 15
+    - - 710
+      - 16
+  deadline: 779
+- id: 4
+  worst-case execution time: 6
+  arrival curve:
+  - 722
+  - - - 1
+      - 1
+    - - 16
+      - 2
+    - - 36
+      - 3
+    - - 65
+      - 4
+    - - 101
+      - 5
+    - - 139
+      - 6
+    - - 184
+      - 7
+    - - 238
+      - 8
+    - - 296
+      - 9
+    - - 355
+      - 10
+    - - 418
+      - 11
+    - - 491
+      - 12
+    - - 564
+      - 13
+    - - 646
+      - 14
+  deadline: 581
+- id: 5
+  worst-case execution time: 12
+  arrival curve:
+  - 1000
+  - - - 1
+      - 2
+    - - 238
+      - 3
+    - - 488
+      - 4
+    - - 738
+      - 5
+    - - 988
+      - 6
+  deadline: 274
+- id: 6
+  worst-case execution time: 47
+  arrival curve:
+  - 1000
+  - - - 1
+      - 1
+    - - 55
+      - 2
+    - - 395
+      - 3
+    - - 735
+      - 4
+  deadline: 245
+- id: 7
+  worst-case execution time: 1
+  period: 25
+  deadline: 12
+- id: 8
+  worst-case execution time: 43
+  min interarrival: 257
+  deadline: 130

@@ -1,0 +1,57 @@
+scheduling policy: FP
+preemption model: NP
+task set:
+- id: 1
+  worst-case execution time: 21
+  arrival curve:
+  - 1051
+  - - - 1
+      - 1
+    - - 10
+      - 2
+    - - 23
+      - 3
+    - - 43
+      - 4
+    - - 73
+      - 5
+    - - 107
+      - 6
+    - - 149
+      - 7
+    - - 195
+      - 8
+    - - 249
+      - 9
+    - - 304
+      - 10
+    - - 367
+      - 11
+    - - 439
+      - 12
+    - - 520
+      - 13
+    - - 607
+      - 14
+    - - 699
+      - 15
+    - - 795
+      - 16
+    - - 893
+      - 17
+    - - 1000
+      - 18
+  deadline: 1475
+  priority: 67
+- id: 2
+  worst-case execution time: 20
+  arrival curve:
+  - 116
+  - - - 1
+      - 1
+    - - 11
+      - 2
+    - - 21
+      - 3
+  deadline: 168
+  priority: 30

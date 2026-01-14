@@ -1,0 +1,157 @@
+scheduling policy: EDF
+preemption model: FP
+task set:
+- id: 1
+  worst-case execution time: 75
+  arrival curve:
+  - 1000
+  - - - 1
+      - 1
+    - - 274
+      - 2
+  deadline: 749
+- id: 2
+  worst-case execution time: 3
+  arrival curve:
+  - 260
+  - - - 1
+      - 1
+    - - 12
+      - 2
+    - - 26
+      - 3
+    - - 42
+      - 4
+    - - 64
+      - 5
+    - - 94
+      - 6
+    - - 128
+      - 7
+    - - 163
+      - 8
+    - - 203
+      - 9
+  deadline: 201
+- id: 3
+  worst-case execution time: 10
+  min interarrival: 99
+  deadline: 79
+- id: 4
+  worst-case execution time: 6
+  arrival curve:
+  - 565
+  - - - 1
+      - 1
+    - - 10
+      - 2
+    - - 21
+      - 3
+    - - 33
+      - 4
+    - - 52
+      - 5
+    - - 76
+      - 6
+    - - 100
+      - 7
+    - - 132
+      - 8
+    - - 173
+      - 9
+    - - 220
+      - 10
+    - - 277
+      - 11
+    - - 339
+      - 12
+    - - 410
+      - 13
+    - - 481
+      - 14
+  deadline: 514
+- id: 5
+  worst-case execution time: 60
+  period: 965
+  deadline: 836
+- id: 6
+  worst-case execution time: 4
+  arrival curve:
+  - 265
+  - - - 1
+      - 1
+    - - 11
+      - 2
+    - - 29
+      - 3
+    - - 49
+      - 4
+    - - 75
+      - 5
+    - - 104
+      - 6
+    - - 135
+      - 7
+    - - 169
+      - 8
+    - - 213
+      - 9
+  deadline: 157
+- id: 7
+  worst-case execution time: 7
+  arrival curve:
+  - 841
+  - - - 1
+      - 1
+    - - 19
+      - 2
+    - - 43
+      - 3
+    - - 75
+      - 4
+    - - 110
+      - 5
+    - - 153
+      - 6
+    - - 198
+      - 7
+    - - 243
+      - 8
+    - - 296
+      - 9
+    - - 359
+      - 10
+    - - 429
+      - 11
+    - - 499
+      - 12
+    - - 578
+      - 13
+    - - 663
+      - 14
+    - - 752
+      - 15
+  deadline: 1081
+- id: 8
+  worst-case execution time: 2
+  arrival curve:
+  - 305
+  - - - 1
+      - 1
+    - - 21
+      - 2
+    - - 41
+      - 3
+    - - 63
+      - 4
+    - - 88
+      - 5
+    - - 121
+      - 6
+    - - 154
+      - 7
+    - - 197
+      - 8
+    - - 244
+      - 9
+  deadline: 403

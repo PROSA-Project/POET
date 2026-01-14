@@ -1,0 +1,278 @@
+scheduling policy: FP
+preemption model: NP
+task set:
+- id: 1
+  worst-case execution time: 60
+  arrival curve:
+  - 1000
+  - - - 1
+      - 1
+    - - 374
+      - 2
+  deadline: 798
+  priority: 72
+- id: 2
+  worst-case execution time: 34
+  min interarrival: 430
+  deadline: 308
+  priority: 38
+- id: 3
+  worst-case execution time: 1
+  arrival curve:
+  - 1000
+  - - - 1
+      - 25
+    - - 5
+      - 26
+    - - 30
+      - 27
+    - - 55
+      - 28
+    - - 80
+      - 29
+    - - 105
+      - 30
+    - - 130
+      - 31
+    - - 155
+      - 32
+    - - 180
+      - 33
+    - - 205
+      - 34
+    - - 230
+      - 35
+    - - 255
+      - 36
+    - - 280
+      - 37
+    - - 305
+      - 38
+    - - 330
+      - 39
+    - - 355
+      - 40
+    - - 380
+      - 41
+    - - 405
+      - 42
+    - - 430
+      - 43
+    - - 455
+      - 44
+    - - 480
+      - 45
+    - - 505
+      - 46
+    - - 530
+      - 47
+    - - 555
+      - 48
+    - - 580
+      - 49
+    - - 605
+      - 50
+    - - 630
+      - 51
+    - - 655
+      - 52
+    - - 680
+      - 53
+    - - 705
+      - 54
+    - - 730
+      - 55
+    - - 755
+      - 56
+    - - 780
+      - 57
+    - - 805
+      - 58
+    - - 830
+      - 59
+    - - 855
+      - 60
+    - - 880
+      - 61
+    - - 905
+      - 62
+    - - 930
+      - 63
+    - - 955
+      - 64
+    - - 980
+      - 65
+  deadline: 14
+  priority: 45
+- id: 4
+  worst-case execution time: 4
+  arrival curve:
+  - 316
+  - - - 1
+      - 1
+    - - 21
+      - 2
+    - - 44
+      - 3
+    - - 76
+      - 4
+    - - 115
+      - 5
+    - - 154
+      - 6
+    - - 196
+      - 7
+    - - 242
+      - 8
+  deadline: 210
+  priority: 30
+- id: 5
+  worst-case execution time: 5
+  arrival curve:
+  - 407
+  - - - 1
+      - 1
+    - - 19
+      - 2
+    - - 37
+      - 3
+    - - 64
+      - 4
+    - - 93
+      - 5
+    - - 126
+      - 6
+    - - 169
+      - 7
+    - - 215
+      - 8
+    - - 266
+      - 9
+    - - 320
+      - 10
+  deadline: 405
+  priority: 83
+- id: 6
+  worst-case execution time: 3
+  arrival curve:
+  - 348
+  - - - 1
+      - 1
+    - - 7
+      - 2
+    - - 20
+      - 3
+    - - 39
+      - 4
+    - - 65
+      - 5
+    - - 94
+      - 6
+    - - 131
+      - 7
+    - - 174
+      - 8
+    - - 217
+      - 9
+    - - 269
+      - 10
+  deadline: 466
+  priority: 32
+- id: 7
+  worst-case execution time: 4
+  arrival curve:
+  - 666
+  - - - 1
+      - 1
+    - - 21
+      - 2
+    - - 51
+      - 3
+    - - 83
+      - 4
+    - - 120
+      - 5
+    - - 159
+      - 6
+    - - 201
+      - 7
+    - - 253
+      - 8
+    - - 305
+      - 9
+    - - 362
+      - 10
+    - - 426
+      - 11
+    - - 496
+      - 12
+    - - 576
+      - 13
+  deadline: 516
+  priority: 76
+- id: 8
+  worst-case execution time: 3
+  arrival curve:
+  - 727
+  - - - 1
+      - 1
+    - - 8
+      - 2
+    - - 23
+      - 3
+    - - 39
+      - 4
+    - - 61
+      - 5
+    - - 88
+      - 6
+    - - 120
+      - 7
+    - - 152
+      - 8
+    - - 187
+      - 9
+    - - 223
+      - 10
+    - - 259
+      - 11
+    - - 301
+      - 12
+    - - 348
+      - 13
+    - - 398
+      - 14
+    - - 457
+      - 15
+    - - 517
+      - 16
+    - - 581
+      - 17
+    - - 654
+      - 18
+  deadline: 658
+  priority: 95
+- id: 9
+  worst-case execution time: 46
+  arrival curve:
+  - 1000
+  - - - 1
+      - 2
+    - - 303
+      - 3
+    - - 803
+      - 4
+  deadline: 744
+  priority: 7
+- id: 10
+  worst-case execution time: 2
+  arrival curve:
+  - 99
+  - - - 1
+      - 1
+    - - 7
+      - 2
+    - - 20
+      - 3
+  deadline: 56
+  priority: 66

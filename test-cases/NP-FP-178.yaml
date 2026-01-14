@@ -1,0 +1,171 @@
+scheduling policy: FP
+preemption model: NP
+task set:
+- id: 1
+  worst-case execution time: 1
+  arrival curve:
+  - 218
+  - - - 1
+      - 1
+    - - 4
+      - 2
+    - - 7
+      - 3
+    - - 15
+      - 4
+    - - 32
+      - 5
+    - - 50
+      - 6
+    - - 69
+      - 7
+    - - 93
+      - 8
+    - - 118
+      - 9
+    - - 148
+      - 10
+  deadline: 287
+  priority: 74
+- id: 2
+  worst-case execution time: 154
+  min interarrival: 929
+  deadline: 472
+  priority: 88
+- id: 3
+  worst-case execution time: 3
+  arrival curve:
+  - 410
+  - - - 1
+      - 1
+    - - 4
+      - 2
+    - - 12
+      - 3
+    - - 27
+      - 4
+    - - 51
+      - 5
+    - - 83
+      - 6
+    - - 121
+      - 7
+    - - 162
+      - 8
+    - - 205
+      - 9
+    - - 252
+      - 10
+    - - 299
+      - 11
+    - - 356
+      - 12
+  deadline: 426
+  priority: 54
+- id: 4
+  worst-case execution time: 4
+  arrival curve:
+  - 227
+  - - - 1
+      - 1
+    - - 9
+      - 2
+    - - 27
+      - 3
+    - - 53
+      - 4
+    - - 85
+      - 5
+    - - 124
+      - 6
+    - - 168
+      - 7
+  deadline: 259
+  priority: 6
+- id: 5
+  worst-case execution time: 2
+  arrival curve:
+  - 259
+  - - - 1
+      - 1
+    - - 4
+      - 2
+    - - 10
+      - 3
+    - - 17
+      - 4
+    - - 27
+      - 5
+    - - 45
+      - 6
+    - - 65
+      - 7
+    - - 94
+      - 8
+    - - 127
+      - 9
+    - - 162
+      - 10
+  deadline: 302
+  priority: 61
+- id: 6
+  worst-case execution time: 3
+  arrival curve:
+  - 1156
+  - - - 1
+      - 1
+    - - 15
+      - 2
+    - - 30
+      - 3
+    - - 46
+      - 4
+    - - 68
+      - 5
+    - - 100
+      - 6
+    - - 142
+      - 7
+    - - 188
+      - 8
+    - - 236
+      - 9
+    - - 284
+      - 10
+    - - 335
+      - 11
+    - - 390
+      - 12
+    - - 455
+      - 13
+    - - 528
+      - 14
+    - - 608
+      - 15
+    - - 697
+      - 16
+    - - 789
+      - 17
+    - - 883
+      - 18
+    - - 984
+      - 19
+    - - 1086
+      - 20
+  deadline: 1697
+  priority: 31
+- id: 7
+  worst-case execution time: 20
+  period: 297
+  deadline: 371
+  priority: 55
+- id: 8
+  worst-case execution time: 3
+  min interarrival: 57
+  deadline: 72
+  priority: 55
+- id: 9
+  worst-case execution time: 84
+  period: 631
+  deadline: 747
+  priority: 67

@@ -1,0 +1,108 @@
+scheduling policy: EDF
+preemption model: FP
+task set:
+- id: 1
+  worst-case execution time: 5
+  period: 50
+  deadline: 41
+- id: 2
+  worst-case execution time: 92
+  arrival curve:
+  - 1000
+  - - - 1
+      - 1
+    - - 222
+      - 2
+  deadline: 1197
+- id: 3
+  worst-case execution time: 44
+  min interarrival: 693
+  deadline: 740
+- id: 4
+  worst-case execution time: 2
+  arrival curve:
+  - 119
+  - - - 1
+      - 1
+    - - 19
+      - 2
+    - - 44
+      - 3
+  deadline: 117
+- id: 5
+  worst-case execution time: 3
+  arrival curve:
+  - 403
+  - - - 1
+      - 1
+    - - 9
+      - 2
+    - - 23
+      - 3
+    - - 46
+      - 4
+    - - 79
+      - 5
+    - - 116
+      - 6
+    - - 158
+      - 7
+    - - 210
+      - 8
+    - - 263
+      - 9
+    - - 321
+      - 10
+  deadline: 579
+- id: 6
+  worst-case execution time: 4
+  arrival curve:
+  - 568
+  - - - 1
+      - 1
+    - - 18
+      - 2
+    - - 37
+      - 3
+    - - 66
+      - 4
+    - - 100
+      - 5
+    - - 138
+      - 6
+    - - 176
+      - 7
+    - - 223
+      - 8
+    - - 277
+      - 9
+    - - 334
+      - 10
+    - - 398
+      - 11
+    - - 468
+      - 12
+  deadline: 385
+- id: 7
+  worst-case execution time: 9
+  period: 100
+  deadline: 112
+- id: 8
+  worst-case execution time: 64
+  period: 451
+  deadline: 447
+- id: 9
+  worst-case execution time: 5
+  arrival curve:
+  - 190
+  - - - 1
+      - 1
+    - - 19
+      - 2
+    - - 41
+      - 3
+    - - 63
+      - 4
+    - - 94
+      - 5
+  deadline: 105

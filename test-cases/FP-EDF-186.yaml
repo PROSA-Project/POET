@@ -1,0 +1,170 @@
+scheduling policy: EDF
+preemption model: FP
+task set:
+- id: 1
+  worst-case execution time: 4
+  arrival curve:
+  - 501
+  - - - 1
+      - 1
+    - - 8
+      - 2
+    - - 15
+      - 3
+    - - 27
+      - 4
+    - - 47
+      - 5
+    - - 68
+      - 6
+    - - 99
+      - 7
+    - - 138
+      - 8
+    - - 180
+      - 9
+    - - 230
+      - 10
+    - - 283
+      - 11
+    - - 344
+      - 12
+    - - 408
+      - 13
+  deadline: 373
+- id: 2
+  worst-case execution time: 29
+  min interarrival: 504
+  deadline: 376
+- id: 3
+  worst-case execution time: 16
+  min interarrival: 174
+  deadline: 153
+- id: 4
+  worst-case execution time: 122
+  period: 812
+  deadline: 756
+- id: 5
+  worst-case execution time: 45
+  period: 500
+  deadline: 410
+- id: 6
+  worst-case execution time: 2
+  min interarrival: 63
+  deadline: 90
+- id: 7
+  worst-case execution time: 7
+  arrival curve:
+  - 1354
+  - - - 1
+      - 1
+    - - 14
+      - 2
+    - - 32
+      - 3
+    - - 54
+      - 4
+    - - 76
+      - 5
+    - - 106
+      - 6
+    - - 146
+      - 7
+    - - 195
+      - 8
+    - - 248
+      - 9
+    - - 308
+      - 10
+    - - 374
+      - 11
+    - - 440
+      - 12
+    - - 511
+      - 13
+    - - 584
+      - 14
+    - - 663
+      - 15
+    - - 750
+      - 16
+    - - 847
+      - 17
+    - - 948
+      - 18
+    - - 1050
+      - 19
+    - - 1160
+      - 20
+    - - 1275
+      - 21
+  deadline: 1403
+- id: 8
+  worst-case execution time: 3
+  arrival curve:
+  - 112
+  - - - 1
+      - 1
+    - - 20
+      - 2
+    - - 40
+      - 3
+  deadline: 96
+- id: 9
+  worst-case execution time: 3
+  arrival curve:
+  - 754
+  - - - 1
+      - 1
+    - - 6
+      - 2
+    - - 15
+      - 3
+    - - 32
+      - 4
+    - - 59
+      - 5
+    - - 92
+      - 6
+    - - 125
+      - 7
+    - - 166
+      - 8
+    - - 217
+      - 9
+    - - 272
+      - 10
+    - - 329
+      - 11
+    - - 393
+      - 12
+    - - 466
+      - 13
+    - - 540
+      - 14
+    - - 618
+      - 15
+    - - 701
+      - 16
+  deadline: 734
+- id: 10
+  worst-case execution time: 2
+  arrival curve:
+  - 243
+  - - - 1
+      - 1
+    - - 10
+      - 2
+    - - 28
+      - 3
+    - - 47
+      - 4
+    - - 70
+      - 5
+    - - 98
+      - 6
+    - - 129
+      - 7
+    - - 166
+      - 8
+  deadline: 338

@@ -1,0 +1,157 @@
+scheduling policy: EDF
+preemption model: NP
+task set:
+- id: 1
+  worst-case execution time: 4
+  arrival curve:
+  - 423
+  - - - 1
+      - 1
+    - - 9
+      - 2
+    - - 18
+      - 3
+    - - 34
+      - 4
+    - - 50
+      - 5
+    - - 69
+      - 6
+    - - 92
+      - 7
+    - - 125
+      - 8
+    - - 162
+      - 9
+    - - 203
+      - 10
+    - - 244
+      - 11
+    - - 286
+      - 12
+    - - 336
+      - 13
+  deadline: 405
+- id: 2
+  worst-case execution time: 8
+  arrival curve:
+  - 578
+  - - - 1
+      - 1
+    - - 10
+      - 2
+    - - 22
+      - 3
+    - - 36
+      - 4
+    - - 55
+      - 5
+    - - 79
+      - 6
+    - - 103
+      - 7
+    - - 128
+      - 8
+    - - 159
+      - 9
+    - - 190
+      - 10
+    - - 228
+      - 11
+    - - 273
+      - 12
+    - - 319
+      - 13
+    - - 368
+      - 14
+    - - 426
+      - 15
+    - - 487
+      - 16
+  deadline: 798
+- id: 3
+  worst-case execution time: 3
+  arrival curve:
+  - 172
+  - - - 1
+      - 1
+    - - 13
+      - 2
+    - - 25
+      - 3
+    - - 47
+      - 4
+    - - 74
+      - 5
+  deadline: 236
+- id: 4
+  worst-case execution time: 9
+  arrival curve:
+  - 1103
+  - - - 1
+      - 1
+    - - 13
+      - 2
+    - - 35
+      - 3
+    - - 66
+      - 4
+    - - 101
+      - 5
+    - - 136
+      - 6
+    - - 178
+      - 7
+    - - 221
+      - 8
+    - - 270
+      - 9
+    - - 324
+      - 10
+    - - 388
+      - 11
+    - - 456
+      - 12
+    - - 527
+      - 13
+    - - 605
+      - 14
+    - - 686
+      - 15
+    - - 769
+      - 16
+    - - 860
+      - 17
+    - - 954
+      - 18
+    - - 1053
+      - 19
+  deadline: 1445
+- id: 5
+  worst-case execution time: 75
+  arrival curve:
+  - 1000
+  - - - 1
+      - 2
+    - - 280
+      - 3
+    - - 629
+      - 4
+    - - 978
+      - 5
+  deadline: 346
+- id: 6
+  worst-case execution time: 1
+  arrival curve:
+  - 174
+  - - - 1
+      - 1
+    - - 13
+      - 2
+    - - 33
+      - 3
+    - - 53
+      - 4
+    - - 80
+      - 5
+  deadline: 222

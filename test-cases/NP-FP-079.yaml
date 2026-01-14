@@ -1,0 +1,174 @@
+scheduling policy: FP
+preemption model: NP
+task set:
+- id: 1
+  worst-case execution time: 50
+  arrival curve:
+  - 1000
+  - - - 1
+      - 2
+    - - 79
+      - 3
+    - - 563
+      - 4
+  deadline: 357
+  priority: 17
+- id: 2
+  worst-case execution time: 66
+  min interarrival: 777
+  deadline: 410
+  priority: 22
+- id: 3
+  worst-case execution time: 8
+  period: 203
+  deadline: 157
+  priority: 57
+- id: 4
+  worst-case execution time: 5
+  period: 50
+  deadline: 46
+  priority: 12
+- id: 5
+  worst-case execution time: 3
+  arrival curve:
+  - 678
+  - - - 1
+      - 1
+    - - 6
+      - 2
+    - - 20
+      - 3
+    - - 38
+      - 4
+    - - 57
+      - 5
+    - - 85
+      - 6
+    - - 118
+      - 7
+    - - 154
+      - 8
+    - - 195
+      - 9
+    - - 246
+      - 10
+    - - 303
+      - 11
+    - - 369
+      - 12
+    - - 439
+      - 13
+    - - 509
+      - 14
+    - - 589
+      - 15
+  deadline: 958
+  priority: 10
+- id: 6
+  worst-case execution time: 3
+  arrival curve:
+  - 165
+  - - - 1
+      - 1
+    - - 17
+      - 2
+    - - 35
+      - 3
+    - - 62
+      - 4
+    - - 91
+      - 5
+  deadline: 110
+  priority: 48
+- id: 7
+  worst-case execution time: 4
+  arrival curve:
+  - 302
+  - - - 1
+      - 1
+    - - 11
+      - 2
+    - - 29
+      - 3
+    - - 53
+      - 4
+    - - 79
+      - 5
+    - - 105
+      - 6
+    - - 131
+      - 7
+    - - 165
+      - 8
+    - - 204
+      - 9
+  deadline: 311
+  priority: 0
+- id: 8
+  worst-case execution time: 5
+  arrival curve:
+  - 485
+  - - - 1
+      - 1
+    - - 5
+      - 2
+    - - 19
+      - 3
+    - - 33
+      - 4
+    - - 57
+      - 5
+    - - 81
+      - 6
+    - - 106
+      - 7
+    - - 138
+      - 8
+    - - 179
+      - 9
+    - - 226
+      - 10
+    - - 275
+      - 11
+    - - 324
+      - 12
+    - - 373
+      - 13
+    - - 431
+      - 14
+  deadline: 580
+  priority: 95
+- id: 9
+  worst-case execution time: 3
+  arrival curve:
+  - 672
+  - - - 1
+      - 1
+    - - 12
+      - 2
+    - - 24
+      - 3
+    - - 42
+      - 4
+    - - 69
+      - 5
+    - - 100
+      - 6
+    - - 140
+      - 7
+    - - 185
+      - 8
+    - - 240
+      - 9
+    - - 303
+      - 10
+    - - 367
+      - 11
+    - - 440
+      - 12
+    - - 522
+      - 13
+    - - 614
+      - 14
+  deadline: 593
+  priority: 52

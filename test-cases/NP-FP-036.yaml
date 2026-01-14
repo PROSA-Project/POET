@@ -1,0 +1,13 @@
+scheduling policy: FP
+preemption model: NP
+task set:
+- id: 1
+  worst-case execution time: 37
+  period: 100
+  deadline: 102
+  priority: 21
+- id: 2
+  worst-case execution time: 13
+  period: 25
+  deadline: 33
+  priority: 47
