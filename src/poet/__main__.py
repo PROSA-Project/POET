@@ -7,13 +7,14 @@ import os
 import shutil
 import subprocess
 import sys
+from dataclasses import dataclass
 
 from joblib import Parallel, delayed
 from pydantic import ValidationError
 
-from poet.analysis import analyze_task_set
+from poet.analysis import AnalysisResults, analyze_task_set
 from poet.certificates import coq_generator, templates
-from poet.model import Problem
+from poet.model import Problem, Task
 from poet.utils import statistics, timing
 
 DOCKERFILE_TEMPLATE_PATH = "templates/docker_certificates/Dockerfile"
@@ -27,10 +28,33 @@ GENERATED_FILE_TYPES = [
     ".glob",
     ".aux",
 ]  # Used to delete old results on each run
-SKIP_VERIFICATION = False
 
 
-def run_poet():
+@dataclass(frozen=True)
+class CoqCompileResult:
+    success: bool
+    task_to_verify: Task | None
+    expected_v_files: list[str]
+    declaration_v_name: str
+
+
+class POETArgs(argparse.Namespace):
+    input_path: str = ""
+    verify_only_id: int | None = None
+    output_path: str | None = None
+    prosa_path: str | None = None
+    clean_output_folder: bool = False
+    delete_certificates: bool = False
+    save_stats: bool = False
+    bounded_tardiness_allowed: bool = False
+    test_schedulability: bool = False
+    repeat_declaration: bool = False
+    no_check: bool = False
+    jobs: int = 1
+    verify_without_dependencies: bool = False
+
+
+def run_poet() -> None:
     stopwatch = timing.Stopwatch()
     stopwatch.start_timer("total_poet_time")
     stopwatch.start_timer("total_time")
@@ -39,52 +63,133 @@ def run_poet():
     # Reading input, basic checks
     ######################################
     opts = parse_args()
+    certificates_path, stats_folder = resolve_paths(opts)
 
-    input_path = opts.input
-    verify_only_id = opts.id
-    certificates_path = opts.output
-    prosa_path = opts.prosa
-    clean_output_folder = opts.clean
-    delete_certificates = opts.delete
-    save_stats = opts.stats
-    bounded_tardiness_allowed = opts.bounded_tardiness
-    test_schedulability = opts.test_schedulability
-    repeat_declaration = opts.repeat_declaration
-    no_check = opts.no_check
-    jobs = int(opts.jobs)
-    verify_without_dependencies = opts.verify_without_dependencies
-
-    if certificates_path is None:
-        certificates_path = os.path.join(os.path.dirname(input_path), "certificates")
-
-    stats_folder = os.path.dirname(input_path) if opts.output is None else opts.output
-
-    check_condition(os.path.exists(input_path), "Input file not found")
-    check_condition(
-        os.path.exists(input_path) and os.path.isfile(input_path),
-        f"File not found: {input_path}",
-    )
+    validate_input_path(opts)
 
     ######################################
     # Parsing input file, performing RTA
     ######################################
 
+    problem_instance = load_problem(opts)
+    analysis_results = analyze_task_set(problem_instance)
+    check_schedulability(problem_instance, analysis_results, opts)
+
+    ######################################
+    # Certificates generation
+    ######################################
+
+    prepare_certificates_folder(certificates_path, opts)
+    declaration_v_name = generate_certificates(
+        problem_instance,
+        analysis_results,
+        certificates_path,
+        opts,
+    )
+
+    _ = stopwatch.pause_timer("total_poet_time")
+
+    if opts.no_check:
+        sys.exit(0)
+
+    ######################################
+    # Coq compilation
+    ######################################
+
+    stopwatch.start_timer("total_coq_time")
+
+    compile_result = compile_certificates(
+        problem_instance,
+        certificates_path,
+        opts,
+        stopwatch,
+        declaration_v_name,
+    )
+
+    _ = stopwatch.pause_timer("total_coq_time")
+
+    ######################################
+    # Coqchk verification
+    ######################################
+
+    coqchk_success = False
+    if compile_result.success:
+        stopwatch.start_timer("total_coqchk_time")
+        coqchk_success = verify_certificates(
+            problem_instance,
+            certificates_path,
+            compile_result.task_to_verify,
+            opts,
+            stopwatch,
+        )
+
+        _ = stopwatch.pause_timer("total_coqchk_time")
+        _ = stopwatch.pause_timer("total_time")
+
+    ######################################
+    # Statistics
+    ######################################
+
+    stats = statistics.Statistics(problem_instance, analysis_results, stopwatch)
+
+    ######################################
+    # Saving stats and closing actions
+    ######################################
+
+    finalize_run(
+        certificates_path,
+        stats_folder,
+        stats,
+        compile_result.success,
+        compile_result.success and coqchk_success,
+        opts,
+    )
+
+
+def resolve_paths(opts: POETArgs) -> tuple[str, str]:
+    certificates_path = (
+        os.path.join(os.path.dirname(opts.input_path), "certificates")
+        if opts.output_path is None
+        else opts.output_path
+    )
+    stats_folder = (
+        os.path.dirname(opts.input_path)
+        if opts.output_path is None
+        else opts.output_path
+    )
+    return certificates_path, stats_folder
+
+
+def validate_input_path(opts: POETArgs) -> None:
+    ensure(os.path.exists(opts.input_path), "Input file not found")
+    ensure(
+        os.path.exists(opts.input_path) and os.path.isfile(opts.input_path),
+        f"File not found: {opts.input_path}",
+    )
+
+
+def load_problem(opts: POETArgs) -> Problem:
     try:
-        problem_instance = Problem.from_yaml_file(input_path)
+        problem_instance = Problem.from_yaml_file(opts.input_path)
     except ValidationError as err:
         print("Failed to parse input:")
         for e in err.errors(include_url=False, include_input=True):
             print(f"- [{'.'.join(str(x) for x in e['loc'])}] {e['msg']}")
         sys.exit(80)
-    check_condition(
-        verify_only_id is None
-        or verify_only_id in [t.id for t in problem_instance.task_set],
-        f"Task id {verify_only_id} was specified, but there is no task with such id.",
+    ensure(
+        opts.verify_only_id is None
+        or opts.verify_only_id in [t.id for t in problem_instance.task_set],
+        f"Task id {opts.verify_only_id} was specified, but there is no task with such id.",
     )
+    return problem_instance
 
-    analysis_results = analyze_task_set(problem_instance)
 
-    if test_schedulability:
+def check_schedulability(
+    problem_instance: Problem,
+    analysis_results: AnalysisResults,
+    opts: POETArgs,
+) -> None:
+    if opts.test_schedulability:
         print(analysis_results)
         if analysis_results.all_deadlines_respected():
             print("Task set is schedulable")
@@ -97,10 +202,16 @@ def run_poet():
             print("At least one task has an unbounded response time.")
         sys.exit(0)
 
-    if not bounded_tardiness_allowed and not analysis_results.all_deadlines_respected():
+    if (
+        not opts.bounded_tardiness_allowed
+        and not analysis_results.all_deadlines_respected()
+    ):
         print("There is a deadline violation; unable to generate certificates.")
         sys.exit(1)
-    elif bounded_tardiness_allowed and not analysis_results.respose_time_is_bounded():
+    if (
+        opts.bounded_tardiness_allowed
+        and not analysis_results.respose_time_is_bounded()
+    ):
         print(
             "At least one response time is unbounded; unable to generate certificates.",
             f"\nTotal utilization: {problem_instance.total_utilization() * 100:.2f}%",
@@ -109,31 +220,30 @@ def run_poet():
             print(f"- Task {t.id}: {t.utilization() * 100:.2f}%")
         sys.exit(1)
 
-    ######################################
-    # Certificates generation
-    ######################################
 
-    # Create certificate folder
-    if clean_output_folder:
+def prepare_certificates_folder(certificates_path: str, opts: POETArgs) -> None:
+    if opts.clean_output_folder:
         clean_certificates_folder(certificates_path)
     if not os.path.exists(certificates_path):
         os.makedirs(certificates_path)
 
-    external_declaration = None
-    # Generate and write certificates
+
+def generate_certificates(
+    problem_instance: Problem,
+    analysis_results: AnalysisResults,
+    certificates_path: str,
+    opts: POETArgs,
+) -> str:
+    external_declaration: str | None = None
     for task in problem_instance.task_set:
         results = analysis_results.results[task]
-
-        # Task
         proof, proof_declaration = coq_generator.generate_proof(
             problem_instance,
             task,
             results,
-            bounded_tardiness_allowed,
-            not repeat_declaration,
+            opts.bounded_tardiness_allowed,
+            not opts.repeat_declaration,
         )
-
-        # Checking that all the declarations match
         if external_declaration is None:
             external_declaration = proof_declaration
         else:
@@ -143,126 +253,123 @@ def run_poet():
         save_certificate(certificate_path, proof)
 
     declaration_v_name = f"{templates.TASK_SET_DECLARATION_FILE_NAME}.v"
-    if not repeat_declaration:  # Save declaration
+    if not opts.repeat_declaration:  # Save declaration
+        assert external_declaration is not None
         certificate_path = os.path.join(certificates_path, declaration_v_name)
         save_certificate(certificate_path, external_declaration)
+    return declaration_v_name
 
-    stopwatch.pause_timer("total_poet_time")
 
-    if no_check:
-        sys.exit(0)
-
-    ######################################
-    # Coq compilation
-    ######################################
-
-    stopwatch.start_timer("total_coq_time")
-
-    # Getting certificates to compile and checking that everything went well
+def compile_certificates(
+    problem_instance: Problem,
+    certificates_path: str,
+    opts: POETArgs,
+    stopwatch: timing.Stopwatch,
+    declaration_v_name: str,
+) -> CoqCompileResult:
     expected_v_files = [t.v_name() for t in problem_instance.task_set]
-    if not repeat_declaration:
+    if not opts.repeat_declaration:
         expected_v_files = [declaration_v_name] + expected_v_files
     v_files = [f.name for f in os.scandir(certificates_path) if f.name.endswith(".v")]
     assert sorted(expected_v_files) == sorted(v_files)
-    # Compiling certificates
 
-    coq_results = []
-    if not repeat_declaration:  # declaration should be compiled first
+    coq_results: list[float] = []
+    task_to_verify: Task | None = None
+    if not opts.repeat_declaration:  # declaration should be compiled first
         dec_time = compile_certificate(
-            prosa_path, certificates_path, declaration_v_name, False
+            opts.prosa_path, certificates_path, declaration_v_name, False
         )
-        coq_results += [dec_time]
+        coq_results.append(dec_time)
 
-    if verify_only_id is None:
-        # verify all tasks
-
-        coq_results += Parallel(n_jobs=jobs)(
+    if opts.verify_only_id is None:
+        parallel_results = Parallel(n_jobs=opts.jobs)(
             delayed(compile_certificate)(
-                prosa_path, certificates_path, v, not repeat_declaration
+                opts.prosa_path, certificates_path, v, not opts.repeat_declaration
             )
             for v in expected_v_files
             if v != declaration_v_name
         )
-        coq_success = all([r > 0 for r in coq_results])
+        coq_results.extend(parallel_results)
+        coq_success = all(r > 0 for r in coq_results)
 
         for i in range(len(coq_results)):
             stopwatch.set_time(f"{expected_v_files[i]}_coq_time", coq_results[i])
     else:
-        # verify specific task only
         task_to_verify_vec = [
-            t for t in problem_instance.task_set if t.id == verify_only_id
+            t for t in problem_instance.task_set if t.id == opts.verify_only_id
         ]
         assert task_to_verify_vec and len(task_to_verify_vec) == 1
         task_to_verify = task_to_verify_vec[0]
         v = task_to_verify.v_name()
         time = compile_certificate(
-            prosa_path, certificates_path, v, not repeat_declaration
+            opts.prosa_path, certificates_path, v, not opts.repeat_declaration
         )
         coq_success = time > 0
         stopwatch.set_time(f"{v}_coq_time", time)
 
-    stopwatch.pause_timer("total_coq_time")
+    return CoqCompileResult(
+        success=coq_success,
+        task_to_verify=task_to_verify,
+        expected_v_files=expected_v_files,
+        declaration_v_name=declaration_v_name,
+    )
 
-    ######################################
-    # Coqchk verification
-    ######################################
 
-    coqchk_success = False
-    if coq_success:
-        stopwatch.start_timer("total_coqchk_time")
-        declaration_vo_name = f"{templates.TASK_SET_DECLARATION_FILE_NAME}.vo"
+def verify_certificates(
+    problem_instance: Problem,
+    certificates_path: str,
+    task_to_verify: Task | None,
+    opts: POETArgs,
+    stopwatch: timing.Stopwatch,
+) -> bool:
+    declaration_vo_name = f"{templates.TASK_SET_DECLARATION_FILE_NAME}.vo"
 
-        if verify_only_id is None:
-            # verify all tasks
-            # Getting certificates to verify and checking that everything went well
-            expected_vo_files = [t.vo_name() for t in problem_instance.task_set]
-            if not repeat_declaration:
-                expected_vo_files = [declaration_vo_name] + expected_vo_files
-            vo_files = [
-                f.name for f in os.scandir(certificates_path) if f.name.endswith(".vo")
-            ]
-            assert sorted(expected_vo_files) == sorted(vo_files)
+    if opts.verify_only_id is None:
+        expected_vo_files = [t.vo_name() for t in problem_instance.task_set]
+        if not opts.repeat_declaration:
+            expected_vo_files = [declaration_vo_name] + expected_vo_files
+        vo_files = [
+            f.name for f in os.scandir(certificates_path) if f.name.endswith(".vo")
+        ]
+        assert sorted(expected_vo_files) == sorted(vo_files)
 
-            # verifying certificates
-            coqchk_results = Parallel(n_jobs=jobs)(
-                delayed(verify_certificate)(
-                    prosa_path, certificates_path, vo, verify_without_dependencies
-                )
-                for vo in expected_vo_files
+        parallel_results = Parallel(n_jobs=opts.jobs)(
+            delayed(verify_certificate)(
+                opts.prosa_path,
+                certificates_path,
+                vo,
+                opts.verify_without_dependencies,
             )
-            coqchk_success = all([r > 0 for r in coqchk_results])
+            for vo in expected_vo_files
+        )
+        coqchk_results = parallel_results
+        coqchk_success = all(r > 0 for r in coqchk_results)
 
-            for i in range(len(coqchk_results)):
-                stopwatch.set_time(
-                    f"{expected_vo_files[i]}_coqchk_time", coqchk_results[i]
-                )
-        else:
-            # verify specific task only
-            assert task_to_verify is not None
-            vo = task_to_verify.vo_name()
-            time = verify_certificate(
-                prosa_path, certificates_path, vo, verify_without_dependencies
-            )
-            coqchk_success = time > 0
+        for i in range(len(coqchk_results)):
+            stopwatch.set_time(f"{expected_vo_files[i]}_coqchk_time", coqchk_results[i])
+        return coqchk_success
 
-            stopwatch.set_time(f"{vo}_coqchk_time", time)
+    assert task_to_verify is not None
+    vo = task_to_verify.vo_name()
+    time = verify_certificate(
+        opts.prosa_path,
+        certificates_path,
+        vo,
+        opts.verify_without_dependencies,
+    )
+    stopwatch.set_time(f"{vo}_coqchk_time", time)
+    return time > 0
 
-        stopwatch.pause_timer("total_coqchk_time")
-        stopwatch.pause_timer("total_time")
 
-    ######################################
-    # Statistics
-    ######################################
-
-    success = coq_success and coqchk_success
-    # if success:
-    stats = statistics.Statistics(problem_instance, analysis_results, stopwatch)
-
-    ######################################
-    # Saving stats and closing actions
-    ######################################
-
-    if delete_certificates:
+def finalize_run(
+    certificates_path: str,
+    stats_folder: str,
+    stats: statistics.Statistics,
+    coq_success: bool,
+    success: bool,
+    opts: POETArgs,
+) -> None:
+    if opts.delete_certificates:
         clean_certificates_folder(certificates_path, True)
 
     if success:
@@ -274,126 +381,139 @@ def run_poet():
         else:
             print(f"ERROR: Could not compile certificates (path: {certificates_path})")
 
-    if save_stats:
+    if opts.save_stats:
         name = "stats.yaml" if success else "stats_error.yaml"
         stats_path = os.path.join(stats_folder, name)
         stats.save(stats_path)
 
 
-def parse_args():
+def parse_args() -> POETArgs:
     parser = argparse.ArgumentParser(
         prog="poet", description="POET: A foundational response-time analysis tool"
     )
 
-    parser.add_argument("input", help="Input file.")
+    _ = parser.add_argument("input_path", help="Input file.")
 
-    parser.add_argument(
+    _ = parser.add_argument(
         "-c",
         "--clean",
+        dest="clean_output_folder",
         default=False,
         action="store_true",
         help="Empty the folder before generating new certificates.",
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         "-o",
         "--output",
+        dest="output_path",
         default=None,
         action="store",
         help="Folder in which proofs will be generated.",
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         "-p",
         "--prosa",
+        dest="prosa_path",
         default=None,
         action="store",
         help="Prosa root folder (when using a development version).",
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         "-j",
         "--jobs",
+        dest="jobs",
         default=1,
+        type=int,
         action="store",
         help="Maximum number of jobs while compiling and verifying.",
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         "-i",
         "--id",
+        dest="verify_only_id",
         default=None,
         action="store",
         type=int,
         help="Only performs formal verification on one task",
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         "-s",
         "--stats",
+        dest="save_stats",
         default=False,
         action="store_true",
         help="Output a YAML file containing the statistics of the task set",
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         "-d",
         "--delete",
+        dest="delete_certificates",
         default=False,
         action="store_true",
         help="Delete certificates after checking them",
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         "-b",
         "--bounded-tardiness",
+        dest="bounded_tardiness_allowed",
         default=False,
         action="store_true",
         help="Allow deadline violations (i.e., soft deadlines)",
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         "-t",
         "--test-schedulability",
+        dest="test_schedulability",
         default=False,
         action="store_true",
         help="Test if the task-set is schedulable (no certificate generation).",
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         "-r",
         "--repeat-declaration",
+        dest="repeat_declaration",
         default=False,
         action="store_true",
         help="Repeat the task set declaration in every certificate.",
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         "-v",
         "--verify-without-dependencies",
+        dest="verify_without_dependencies",
         default=False,
         action="store_true",
         help="Ignore the dependencies (Prosa, ssreflect, ...) while verifying.",
     )
 
-    parser.add_argument(
+    _ = parser.add_argument(
         "-n",
         "--no-check",
+        dest="no_check",
         default=False,
         action="store_true",
         help="Only generate but do not actually check the certificates.",
     )
 
-    return parser.parse_args()
+    return parser.parse_args(namespace=POETArgs())
 
 
-def check_condition(condition, error_message):
+def ensure(condition: bool, error_message: str) -> None:
     if not condition:
         print(error_message)
         sys.exit(1)
 
 
-def clean_certificates_folder(certificates_path, delete_all=False):
+def clean_certificates_folder(certificates_path: str, delete_all: bool = False) -> None:
     if not os.path.exists(certificates_path):
         return
 
@@ -412,16 +532,21 @@ def clean_certificates_folder(certificates_path, delete_all=False):
             )
 
 
-def save_certificate(path, certificate):
+def save_certificate(path: str, certificate: str) -> None:
     try:
         with open(path, "w") as f:
-            f.write(certificate)
+            _ = f.write(certificate)
     except Exception as e:
         print(f"Error while saving certificate to '{path}'")
         print(e)
 
 
-def compile_certificate(prosa_path, certificates_path, certificate, external_dec):
+def compile_certificate(
+    prosa_path: str | None,
+    certificates_path: str,
+    certificate: str,
+    _external_dec: bool,
+) -> float:
     stopwatch = timing.Stopwatch()
     stopwatch.start_timer("coq_time")
     print(f"Compiling {certificate}...")
@@ -445,10 +570,11 @@ def compile_certificate(prosa_path, certificates_path, certificate, external_dec
 
 
 def verify_certificate(
-    prosa_path, certificates_path, certificate, verify_without_dependencies
-):
-    if SKIP_VERIFICATION:
-        return 0
+    prosa_path: str | None,
+    certificates_path: str,
+    certificate: str,
+    verify_without_dependencies: bool,
+) -> float:
     stopwatch = timing.Stopwatch()
     stopwatch.start_timer("coqchk_time")
     print(f"Verifying {certificate}...")
