@@ -6,7 +6,7 @@ import itertools
 import re
 
 
-def patch(text, wildcard, patch):
+def patch(text: str, wildcard: str, patch_content: object) -> str:
     # Given a text, replaces the occurrences of the wildcard with the given patch.
     # In case of single-line patches, the code just performs a replace. In case of
     # multi-line patches, the code tries to preserves the indentation of the wildcard
@@ -19,7 +19,7 @@ def patch(text, wildcard, patch):
     #              Patched line 1
     #              Patched line 2
     # <------------>
-    patch = str(patch)
+    patch = str(patch_content)
     patch_lines = patch.split("\n")
     if len(patch_lines) == 1:  # Single-line patch, easy.
         return text.replace(wildcard, patch)
@@ -28,7 +28,7 @@ def patch(text, wildcard, patch):
         line_with_wildcard_re = re.compile("^(.*)" + re.escape(wildcard), re.MULTILINE)
 
         # function to replace one matched lined
-        def insert_lines(match):
+        def insert_lines(match: re.Match[str]) -> str:
             first_indent = match.group(1)
             follow_indent = re.sub(r"\S", " ", match.group(1))
             first_line = [first_indent + patch_lines[0]]
@@ -38,7 +38,12 @@ def patch(text, wildcard, patch):
         return line_with_wildcard_re.sub(insert_lines, text)
 
 
-def conditional_cut_patch(text, wildcard_start, wildcard_end, cut):
+def conditional_cut_patch(
+    text: str,
+    wildcard_start: str,
+    wildcard_end: str,
+    cut: bool,
+) -> tuple[str, str]:
     # Given a text, the code acts on every portion of text of the form
     # "wildcard_start ... wildcard_end".
     # If cut is specified, the text enclosed in the wildcards and the wildcards
@@ -61,6 +66,7 @@ def conditional_cut_patch(text, wildcard_start, wildcard_end, cut):
             re.MULTILINE,
         )
         match = wc_re.search(text)
+        assert match is not None
         cut_text = match.group(1)
         return wc_re.sub("", text), cut_text
     else:
