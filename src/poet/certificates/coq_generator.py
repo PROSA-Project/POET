@@ -2,14 +2,23 @@
 This module handles the generation of the Coq proof file.
 """
 
+from __future__ import annotations
+
+from collections.abc import Sequence
+
+from ..analysis import TaskAnalysisResults
 from ..certificates import templates
 from ..model import Problem, Task
 from ..utils import conditional_cut_patch, patch
 
 
 def generate_proof(
-    problem_instance, tsk, results, bounded_tardiness_allowed, split_declaration
-):
+    problem_instance: Problem,
+    tsk: Task,
+    results: TaskAnalysisResults,
+    bounded_tardiness_allowed: bool,
+    split_declaration: bool,
+) -> tuple[str, str]:
     ts = problem_instance.task_set
     proof = templates.get_main_certificate(problem_instance)
     proof = patch(
@@ -21,9 +30,7 @@ def generate_proof(
     proof = patch(proof, templates.WC_RESPONSE_TIME_BOUND, f"{results.R}%N")
     proof = patch(proof, templates.WC_SEARCH_SPACE, coq_list(results.SS))
     proof = patch(proof, templates.WC_SEARCH_SPACE_SIZE, len(results.SS))
-    proof = patch(
-        proof, templates.WC_F_SOLUTIONS, get_F_solutions(problem_instance, results.Fs)
-    )
+    proof = patch(proof, templates.WC_F_SOLUTIONS, get_F_solutions(results.Fs))
 
     use_tardiness_bound = bounded_tardiness_allowed and tsk.deadline < results.R
     if use_tardiness_bound:
@@ -68,15 +75,14 @@ def generate_proof(
     return proof, declaration
 
 
-def get_F_solutions(problem_instance, Fs):
-    fs_list = coq_list(Fs)
-    return f"Let Fs : seq N := {fs_list}%N.\n"
+def get_F_solutions(Fs: Sequence[int]) -> str:
+    return f"Let Fs : seq N := {coq_list(Fs)}%N.\n"
 
 
-def task_set_declaration(problem_instance: Problem):
+def task_set_declaration(problem_instance: Problem) -> str:
     # Generates Coq records from the given task set.
     # Syntax: `Let tsk1 := {| task_id := 1; task_deadline := 3; ... |}.`
-    def task_declaration(t: Task):
+    def task_declaration(t: Task) -> str:
         task_dec = templates.get_task_declaration(problem_instance, t)
         task_dec = patch(task_dec, templates.WC_TASK_NAME, t.name())
         task_dec = patch(task_dec, templates.WC_TASK_ID, f"{t.id}")
@@ -107,20 +113,14 @@ def task_set_declaration(problem_instance: Problem):
     return "\n".join(task_declarations)
 
 
-def coq_list(list):
+def coq_list(items: Sequence[object]) -> str:
     # Generates a Coq list declaration from the given list.
     # Syntax: `[:: el1; el2; ...]`.
-    xs = "[:: " + "; ".join(map(str, list)) + "]"
+    xs = "[:: " + "; ".join(map(str, items)) + "]"
     return xs
 
 
-def emax_declaration(emax):
-    dec = f"ArrivalPrefix_T ({emax.h}, "
-    dec += coq_list(emax.steps) + ") %N"
-    return dec
-
-
-def task_set_list(task_set):
+def task_set_list(task_set: Sequence[Task]) -> str:
     # Generates a Coq list from the given task set.
     # Syntax: `[:: tsk1; tsk2; ...]`.
     return coq_list([t.name() for t in task_set])
