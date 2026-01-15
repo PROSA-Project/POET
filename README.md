@@ -30,9 +30,11 @@ POET requires two sets of dependencies:
 
 POET has been tested with Python 3.14, but older versions down to 3.11 will likely work, too.
 
-Additionally, the following two Python packages are required:
+Additionally, the following four Python packages are required:
 
 - [PyYAML](https://pypi.org/project/PyYAML/)
+- [pydantic](https://pypi.org/project/pydantic/)
+- [pyRTA](https://pypi.org/project/response-time-analysis/)
 - [joblib](https://pypi.org/project/joblib/)
 
 The Python dependencies will be installed automatically by `uv` and do not have to be managed manually.
@@ -57,7 +59,7 @@ After the switch has been created, be sure to activate it in the current shell.
 eval $(opam env --switch=Prosa-v0.6)
 ```
 
-Next, make `opam` aware of the official repository of stable Coq packages...
+Next, make `opam` aware of the official repository of stable Rocq packages...
 
 ```
 opam repo add rocq-released https://rocq-prover.org/opam/released
@@ -75,7 +77,7 @@ Finally, simply install Prosa version 0.6 and its refinements package, which wil
 opam install rocq-prosa-refinements.0.6
 ```
 
-The compilation and installation of all packages will take some time.
+The compilation and installation of all required packages will take some time.
 
 
 ## Usage
@@ -302,7 +304,7 @@ Please refer to the paper for an intuitive explanation of how to interpret the g
 
 ## Credits and Contact
 
-POET was originally developed by Marco Maida and Sergey Bozhko. It is now being maintained by the [Prosa project](https://prosa.mpi-sws.org). Please contact the Prosa maintainers for any questions, suggestions, or patches, or open an issue on GitLab. 
+POET was originally developed by Marco Maida and Sergey Bozhko. It is now maintained by the [Prosa project](https://prosa.mpi-sws.org). Please contact the Prosa maintainers for any questions, suggestions, or patches, or open an issue on GitLab. 
 
 Merge requests welcome! 
 
