@@ -1,13 +1,13 @@
 import os
 
-from poet.model import Problem, Task
+from ..model import Problem, Task
 
 TASK_SET_DECLARATION_FILE_NAME = "task_set"
 
 # ********** Template files **********
 
 TEMPLATES_MAIN_FOLDER = os.path.join(
-    (os.path.dirname(os.path.realpath(__file__))), "..", "..", "templates"
+    (os.path.dirname(os.path.realpath(__file__))), "..", "..", "..", "templates"
 )
 TEMPLATES_CERTIFICATES_FOLDER = os.path.join(TEMPLATES_MAIN_FOLDER, "certificates")
 TEMPLATE_MAIN_FP_EDF = os.path.join(TEMPLATES_CERTIFICATES_FOLDER, "fp_edf.v")

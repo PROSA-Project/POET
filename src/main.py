@@ -11,10 +11,10 @@ import sys
 from joblib import Parallel, delayed
 from pydantic import ValidationError
 
-from certificates import coq_generator, templates
 from poet.analysis import analyze_task_set
+from poet.certificates import coq_generator, templates
 from poet.model import Problem
-from utils import statistics, timing
+from poet.utils import statistics, timing
 
 DOCKERFILE_TEMPLATE_PATH = "templates/docker_certificates/Dockerfile"
 CERTIFICATE_CHECKER_PATH = "templates/docker_certificates/check_certificates.sh"

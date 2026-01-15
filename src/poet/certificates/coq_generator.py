@@ -2,9 +2,9 @@
 This module handles the generation of the Coq proof file.
 """
 
-from certificates import templates
-from poet.model import Problem, Task
-from utils.utils import conditional_cut_patch, patch
+from ..certificates import templates
+from ..model import Problem, Task
+from ..utils import conditional_cut_patch, patch
 
 
 def generate_proof(
