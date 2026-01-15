@@ -7,13 +7,17 @@ function die {
 	exit 1
 }
 
-TOOL="main.py"
+PACKAGE="poet"
+
+TOOL="${PACKAGE}/__main__.py"
 SRC="src"
 
-PROJECT_DIR="${SCRIPT_DIR}/${SRC}"
-TOOL_PATH="${PROJECT_DIR}/${TOOL}"
+PROJECT_DIR="${SCRIPT_DIR}/"
+TOOL_PATH="${PROJECT_DIR}/$SRC/${TOOL}"
 
 MSG="Cannot find the uv Python project manager. Please see https://docs.astral.sh/uv/getting-started/installation/"
 which uv > /dev/null || die "$MSG"
 
-exec uv --quiet --project "${PROJECT_DIR}" run "${TOOL_PATH}" "$@"
+UV_CMD="run python -m ${PACKAGE}"
+
+exec uv --quiet --project "${PROJECT_DIR}" ${UV_CMD} "$@"
