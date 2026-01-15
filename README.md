@@ -28,7 +28,7 @@ POET requires two sets of dependencies:
 
 ### Python Dependencies
 
-POET has been tested with Python 3.14, but older versions down to 3.10 or so will likely work, too.
+POET has been tested with Python 3.14, but older versions down to 3.11 will likely work, too.
 
 Additionally, the following two Python packages are required:
 
