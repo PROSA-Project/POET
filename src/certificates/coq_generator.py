@@ -2,9 +2,8 @@
 This module handles the generation of the Coq proof file.
 """
 
-from poet_io import templates
-from structures import pg
-from structures.task import TaskType
+from certificates import templates
+from poet.model import Problem, Task
 from utils.utils import conditional_cut_patch, patch
 
 
@@ -74,31 +73,34 @@ def get_F_solutions(problem_instance, Fs):
     return f"Let Fs : seq N := {fs_list}%N.\n"
 
 
-def task_set_declaration(problem_instance):
+def task_set_declaration(problem_instance: Problem):
     # Generates Coq records from the given task set.
     # Syntax: `Let tsk1 := {| task_id := 1; task_deadline := 3; ... |}.`
-    def task_declaration(t):
+    def task_declaration(t: Task):
         task_dec = templates.get_task_declaration(problem_instance, t)
         task_dec = patch(task_dec, templates.WC_TASK_NAME, t.name())
         task_dec = patch(task_dec, templates.WC_TASK_ID, f"{t.id}")
         task_dec = patch(task_dec, templates.WC_TASK_COST, f"{t.wcet}")
         task_dec = patch(task_dec, templates.WC_TASK_DEADLINE, f"{t.deadline}")
 
-        if problem_instance.scheduling_policy == pg.FIXED_PRIORITY:
-            assert t.priority is not None
+        if problem_instance.scheduling_policy.is_fp():
             task_dec = patch(task_dec, templates.WC_TASK_PRIORITY, f"{t.priority}")
 
-        if t.task_type in [TaskType.PERIODIC, TaskType.SPORADIC]:
+        if t.period is not None:
             task_dec = patch(task_dec, templates.WC_TASK_ARRIVAL, f"{t.period}")
-        elif t.task_type == TaskType.ARRIVAL_CURVE:
+        elif t.mit is not None:
+            task_dec = patch(task_dec, templates.WC_TASK_ARRIVAL, f"{t.mit}")
+        elif t.arrival_curve is not None:
             curve = templates.TEMPLATE_CURVE
-            curve = patch(curve, templates.WC_CURVE_HORIZON, f"{t.arrival_curve.h}")
+            curve = patch(
+                curve, templates.WC_CURVE_HORIZON, f"{t.arrival_curve.horizon}"
+            )
             curve = patch(
                 curve, templates.WC_CURVE_STEPS, f"{coq_list(t.arrival_curve.steps)}"
             )
             task_dec = patch(task_dec, templates.WC_TASK_ARRIVAL, curve)
         else:
-            assert False
+            assert False  # unreachable
         return task_dec
 
     task_declarations = [task_declaration(t) for t in problem_instance.task_set]

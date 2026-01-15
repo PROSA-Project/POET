@@ -62,7 +62,7 @@ class Statistics(yaml.YAMLObject):
             with open(path, "w") as f:
                 f.write(yaml.dump(self))
         except Exception as e:
-            print("Error while saving stats file '{path}'")
+            print(f"Error while saving stats file '{path}'")
             print(e)
 
     @staticmethod
@@ -71,7 +71,7 @@ class Statistics(yaml.YAMLObject):
             with open(path, "r") as f:
                 return yaml.load(f.read(), Loader=yaml.Loader)
         except Exception as e:
-            print("Error while loading stats file in '{path}'")
+            print(f"Error while loading stats file in '{path}'")
             print(e)
 
     def __str__(self):

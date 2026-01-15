@@ -9,9 +9,11 @@ import subprocess
 import sys
 
 from joblib import Parallel, delayed
+from pydantic import ValidationError
 
-from poet_io import coq_generator, parser, templates
-from structures.analysis_results import AnalysisResults
+from certificates import coq_generator, templates
+from poet.analysis import analyze_task_set
+from poet.model import Problem
 from utils import statistics, timing
 
 DOCKERFILE_TEMPLATE_PATH = "templates/docker_certificates/Dockerfile"
@@ -67,15 +69,20 @@ def run_poet():
     # Parsing input file, performing RTA
     ######################################
 
-    problem_instance = parser.parse_file(input_path)
-    assert problem_instance is not None
+    try:
+        problem_instance = Problem.from_yaml_file(input_path)
+    except ValidationError as err:
+        print("Failed to parse input:")
+        for e in err.errors(include_url=False, include_input=True):
+            print(f"- [{'.'.join(str(x) for x in e['loc'])}] {e['msg']}")
+        sys.exit(80)
     check_condition(
         verify_only_id is None
         or verify_only_id in [t.id for t in problem_instance.task_set],
         f"Task id {verify_only_id} was specified, but there is no task with such id.",
     )
 
-    analysis_results = AnalysisResults(problem_instance)
+    analysis_results = analyze_task_set(problem_instance)
 
     if test_schedulability:
         print(analysis_results)
@@ -410,7 +417,7 @@ def save_certificate(path, certificate):
         with open(path, "w") as f:
             f.write(certificate)
     except Exception as e:
-        print("Error while saving certificate to '{path}'")
+        print(f"Error while saving certificate to '{path}'")
         print(e)
 
 

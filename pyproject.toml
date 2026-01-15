@@ -6,6 +6,18 @@ readme = "README.md"
 requires-python = ">=3.10.0"
 dependencies = [
     "joblib>=1.5.2",
+    "pydantic>=2.12.5",
     "pyyaml>=6.0.3",
     "response-time-analysis>=0.1.1",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "ruff>=0.14.11",
 ]

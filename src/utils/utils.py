@@ -6,11 +6,6 @@ import itertools
 import re
 
 
-# Returns a string containing all the elements of a given list in the form "a,b,c"
-def pretty_list(list):
-    return ", ".join(list)
-
-
 def patch(text, wildcard, patch):
     # Given a text, replaces the occurrences of the wildcard with the given patch.
     # In case of single-line patches, the code just performs a replace. In case of

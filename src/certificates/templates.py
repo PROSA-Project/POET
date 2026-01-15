@@ -1,6 +1,6 @@
 import os
-from structures import pg
-from structures.task import TaskType
+
+from poet.model import Problem, Task
 
 TASK_SET_DECLARATION_FILE_NAME = "task_set"
 
@@ -57,7 +57,7 @@ WC_PROSA_PATH = "$PROSA_PATH$"
 # **********************************************
 
 
-def get_main_certificate(problem_instance):
+def get_main_certificate(problem_instance: Problem):
     """
     Picks a template file, basing on the problem instance.
     Returns the entire file as a string.
@@ -65,13 +65,13 @@ def get_main_certificate(problem_instance):
     pm = problem_instance.preemption_model
     sp = problem_instance.scheduling_policy
 
-    if pm == pg.FULLY_PREEMPTIVE and sp == pg.FIXED_PRIORITY:
+    if pm.is_fp() and sp.is_fp():
         template_file_path = TEMPLATE_MAIN_FP_FP
-    elif pm == pg.FULLY_PREEMPTIVE and sp == pg.EARLIEST_DEADLINE_FIRST:
+    elif pm.is_fp() and sp.is_edf():
         template_file_path = TEMPLATE_MAIN_FP_EDF
-    elif pm == pg.NON_PREEMPTIVE and sp == pg.FIXED_PRIORITY:
+    elif pm.is_np() and sp.is_fp():
         template_file_path = TEMPLATE_MAIN_NP_FP
-    elif pm == pg.NON_PREEMPTIVE and sp == pg.EARLIEST_DEADLINE_FIRST:
+    elif pm.is_np() and sp.is_edf():
         template_file_path = TEMPLATE_MAIN_NP_EDF
     else:
         raise Exception(
@@ -81,18 +81,18 @@ def get_main_certificate(problem_instance):
     return open(template_file_path, "r").read()
 
 
-def get_task_declaration(problem_instance, t):
-    if problem_instance.scheduling_policy == pg.EARLIEST_DEADLINE_FIRST:
-        if t.task_type == TaskType.PERIODIC:
+def get_task_declaration(problem_instance: Problem, t: Task):
+    if problem_instance.scheduling_policy.is_edf():
+        if t.period is not None:
             return TEMPLATE_PERIODIC_TASK_DECLARATION_NO_PRIORITY
-        elif t.task_type == TaskType.SPORADIC:
+        elif t.mit is not None:
             return TEMPLATE_SPORADIC_TASK_DECLARATION_NO_PRIORITY
         else:
             return TEMPLATE_TASK_DECLARATION_NO_PRIORITY
     else:
-        if t.task_type == TaskType.PERIODIC:
+        if t.period is not None:
             return TEMPLATE_PERIODIC_TASK_DECLARATION_PRIORITY
-        elif t.task_type == TaskType.SPORADIC:
+        elif t.mit is not None:
             return TEMPLATE_SPORADIC_TASK_DECLARATION_PRIORITY
         else:
             return TEMPLATE_TASK_DECLARATION_PRIORITY
